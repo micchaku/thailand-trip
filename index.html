@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>タイ南部 旅行ルートマップ（詳細版）</title>
+<title>ベトナム・タイ（北部・南部離島）周遊ルートマップ</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,7 +18,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 .timeline { position: relative; padding-left: 28px; }
 .timeline::before {
   content: ''; position: absolute; left: 12px; top: 8px; bottom: 8px;
-  width: 2px; background: linear-gradient(180deg, #f97316, #10b981, #06b6d4, #3b82f6, #8b5cf6, #14b8a6, #ec4899, #f59e0b);
+  width: 2px; background: linear-gradient(180deg, #ec4899, #f59e0b, #f97316, #10b981, #3b82f6, #06b6d4, #8b5cf6, #d946ef);
 }
 .tl-item { position: relative; padding: 0 0 20px 20px; }
 .tl-item:last-child { padding-bottom: 0; }
@@ -31,7 +31,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 .tl-header { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .tl-place { font-weight: 700; font-size: 1rem; color: #fff; }
 .tl-dates { font-size: 0.8rem; color: #94a3b8; }
-.tl-stay { font-size: 0.75rem; color: var(--c); font-weight: 600; }
+.tl-stay { font-size: 0.8rem; color: var(--c); font-weight: 700; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; }
 
 .tl-transport {
   margin-top: 6px; padding: 8px 12px; border-radius: 8px;
@@ -60,24 +60,19 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 .custom-popup .leaflet-popup-tip { background: #1e293b; }
 .custom-popup .leaflet-popup-content { margin: 10px 14px; font-size: 13px; line-height: 1.6; }
 .custom-popup .leaflet-popup-content strong { color: #fff; }
-.custom-popup .leaflet-popup-content .pop-tag {
-  display: inline-block; font-size: 10px; font-weight: 600;
-  padding: 1px 5px; border-radius: 3px; margin-right: 3px;
-}
 </style>
 </head>
 <body>
 
 <div id="map"></div>
 <div class="panel">
-  <h1>バンコク → プーケット 陸路・海路縦断ルート</h1>
-  <p class="subtitle">2027年1月5日〜23日（18泊19日）｜全行程が一方向、回り道なし</p>
+  <h1>羽田発着 ベトナム・タイ（北部＆南部離島）縦断ルート</h1>
+  <p class="subtitle">1月2日〜1月22日（20泊21日）｜滞在期間・宿泊数明記プラン</p>
   <div class="timeline" id="timeline"></div>
   <div class="legend-bar">
-    <div class="leg"><div class="leg-line" style="--lc:#f97316; background:var(--lc)"></div> 列車</div>
-    <div class="leg"><div class="leg-line" style="--lc:#10b981; background:var(--lc)"></div> ミニバン（陸路）</div>
+    <div class="leg"><div class="leg-line dashed" style="--lc:#f472b6"></div> 国際・国内フライト</div>
+    <div class="leg"><div class="leg-line" style="--lc:#f97316; background:var(--lc)"></div> 夜行列車</div>
     <div class="leg"><div class="leg-line dashed" style="--lc:#06b6d4"></div> フェリー／ボート</div>
-    <div class="leg"><div class="leg-line dashed" style="--lc:#f472b6"></div> フライト</div>
   </div>
 </div>
 
@@ -86,139 +81,114 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 
 // ===== DATA =====
 const places = [
-  { id:"bangkok", name:"バンコク", en:"Bangkok", lat:13.7563, lng:100.5018,
-    sub:"クルンテープ・アピワット中央駅", dates:"1/5", stay:"",
-    popExtra:"南部本線の夜行列車の発車駅", color:"#f97316", type:"main" },
-
-  { id:"huahin", name:"ホアヒン駅", en:"Hua Hin", lat:12.5700, lng:99.9576,
-    sub:"通過（下車不要）", color:"#f97316", type:"train" },
-  { id:"chumphon", name:"チュムポーン駅", en:"Chumphon", lat:10.4930, lng:99.1800,
-    sub:"通過（下車不要）", color:"#f97316", type:"train" },
-  { id:"suratthai", name:"スラータニー駅", en:"Surat Thani", lat:9.1382, lng:99.3268,
-    sub:"通過（下車不要）", color:"#f97316", type:"train" },
-  { id:"nakhonsi", name:"ナコンシータマラート駅", en:"Nakhon Si Thammarat", lat:8.4304, lng:99.9631,
-    sub:"通過（下車不要）", color:"#f97316", type:"train" },
-
-  { id:"trang", name:"トラン駅", en:"Trang Station", lat:7.5563, lng:99.6114,
-    sub:"★ 下車駅", dates:"1/6 早朝着", stay:"",
-    popExtra:"バンコクから約15時間。ここでミニバンに乗り換え", color:"#f97316", type:"station" },
-
-  { id:"pakbara", name:"パクバラ港", en:"Pak Bara Pier", lat:6.8725, lng:99.7598,
-    sub:"リペ島行きスピードボート乗り場", color:"#10b981", type:"pier" },
-
-  { id:"lipe", name:"リペ島", en:"Koh Lipe", lat:6.5000, lng:99.3000,
-    sub:"パタヤビーチ桟橋着", dates:"1/6〜8", stay:"3泊",
-    popExtra:"ハイシーズン。透明度抜群のビーチ", color:"#10b981", type:"main" },
-
-  { id:"lanta", name:"ランタ島", en:"Koh Lanta (Saladan Pier)", lat:7.6292, lng:99.0389,
-    sub:"フェリー経由地（乗り換え or 寄港）", color:"#06b6d4", type:"ferry-stop" },
-
-  { id:"krabi", name:"クラビ", en:"Krabi (Klong Jilad Pier)", lat:8.0863, lng:98.9063,
-    sub:"クロンジラッド港着", dates:"1/9〜11", stay:"3泊",
-    popExtra:"アオナンビーチ、ライレイビーチの拠点", color:"#3b82f6", type:"main" },
-
-  { id:"phiphi", name:"ピピ島", en:"Phi Phi (Tonsai Pier)", lat:7.7407, lng:98.7784,
-    sub:"トンサイ港着", dates:"1/12〜14", stay:"3泊",
-    popExtra:"マヤベイ、シュノーケリング", color:"#8b5cf6", type:"main" },
-
-  { id:"yaonoi", name:"ヤオノイ島", en:"Koh Yao Noi", lat:8.1100, lng:98.6200,
-    sub:"パンガー湾の静かな離島", dates:"1/15〜17", stay:"3泊",
-    popExtra:"石灰岩の奇岩の絶景。のどかな島時間を満喫", color:"#14b8a6", type:"main" },
-
-  { id:"phuket", name:"プーケット", en:"Phuket", lat:7.8804, lng:98.3923,
-    sub:"", dates:"1/18〜22", stay:"5泊",
-    popExtra:"パトンビーチ、オールドタウン、夜市", color:"#ec4899", type:"main" },
+  { id:"haneda", name:"羽田空港", en:"Haneda Airport", lat:35.5494, lng:139.7798,
+    sub:"日本発着拠点", dates:"1/2 発 / 1/22 帰国", stay:"", color:"#e11d48", type:"main" },
 
   { id:"hcmc", name:"ホーチミン", en:"Ho Chi Minh City", lat:10.8231, lng:106.6297,
-    sub:"帰国", dates:"1/23 発", stay:"",
-    popExtra:"プーケット国際空港からフライト", color:"#f59e0b", type:"main" }
+    sub:"ベトナム（滞在＆経由）", dates:"1/2〜1/5", stay:"3泊4日",
+    popExtra:"絶品グルメとコロニアル街歩き", color:"#f59e0b", type:"main" },
+
+  { id:"bangkok", name:"バンコク", en:"Bangkok", lat:13.7563, lng:100.5018,
+    sub:"クルンテープ・アピワット中央駅経由", dates:"1/5", stay:"（1泊 車中泊）",
+    popExtra:"夜行列車乗り継ぎ拠点", color:"#f97316", type:"transit" },
+
+  { id:"chiangmai", name:"チェンマイ", en:"Chiang Mai", lat:18.7883, lng:98.9853,
+    sub:"タイ北部 古都", dates:"1/6〜1/10", stay:"4泊5日",
+    popExtra:"カフェ巡り、寺院散策、ゆったり滞在", color:"#10b981", type:"main" },
+
+  { id:"krabi", name:"クラビ", en:"Krabi", lat:8.0863, lng:98.9063,
+    sub:"アオナン / ライレイビーチ", dates:"1/10〜1/13", stay:"3泊4日",
+    popExtra:"ダイナミックな石灰岩の絶景", color:"#3b82f6", type:"main" },
+
+  { id:"lanta", name:"ランタ島", en:"Koh Lanta", lat:7.6292, lng:99.0389,
+    sub:"サラダン港着", dates:"1/13〜1/16", stay:"3泊4日",
+    popExtra:"欧米人に人気の落ち着いた雰囲気の離島", color:"#06b6d4", type:"main" },
+
+  { id:"phiphi", name:"ピピ島", en:"Koh Phi Phi", lat:7.7407, lng:98.7784,
+    sub:"トンサイ港着", dates:"1/16〜1/19", stay:"3泊4日",
+    popExtra:"マヤベイ＆透明度抜群のエメラルドグリーン海", color:"#8b5cf6", type:"main" },
+
+  { id:"phuket", name:"プーケット", en:"Phuket", lat:7.8804, lng:98.3923,
+    sub:"パトン / オールドタウン", dates:"1/19〜1/22", stay:"3泊4日",
+    popExtra:"タイ最大のリゾート島で締めくくり", color:"#d946ef", type:"main" }
 ];
 
 const segments = [
-  { from:"bangkok", to:"huahin", color:"#f97316", weight:3, dash:null },
-  { from:"huahin", to:"chumphon", color:"#f97316", weight:3, dash:null },
-  { from:"chumphon", to:"suratthai", color:"#f97316", weight:3, dash:null },
-  { from:"suratthai", to:"nakhonsi", color:"#f97316", weight:3, dash:null },
-  { from:"nakhonsi", to:"trang", color:"#f97316", weight:3, dash:null },
-  { from:"trang", to:"pakbara", color:"#10b981", weight:3, dash:null },
-  { from:"pakbara", to:"lipe", color:"#06b6d4", weight:2.5, dash:"8 6" },
-  { from:"lipe", to:"lanta", color:"#06b6d4", weight:2.5, dash:"8 6" },
-  { from:"lanta", to:"krabi", color:"#06b6d4", weight:2.5, dash:"8 6" },
-  { from:"krabi", to:"phiphi", color:"#06b6d4", weight:2.5, dash:"8 6" },
-  { from:"phiphi", to:"yaonoi", color:"#06b6d4", weight:2.5, dash:"8 6" },
-  { from:"yaonoi", to:"phuket", color:"#06b6d4", weight:2.5, dash:"8 6" },
-  { from:"phuket", to:"hcmc", color:"#f472b6", weight:2, dash:"6 10",
-    curve:[[9.0, 101.0], [10.0, 104.0]] }
+  { from:"haneda", to:"hcmc", color:"#f472b6", weight:2, dash:"6 8", curve:[[22.0, 125.0]] },
+  { from:"hcmc", to:"bangkok", color:"#f472b6", weight:2, dash:"6 8" },
+  { from:"bangkok", to:"chiangmai", color:"#f97316", weight:3, dash:null },
+  { from:"chiangmai", to:"krabi", color:"#f472b6", weight:2, dash:"6 8", curve:[[13.0, 97.0]] },
+  { from:"krabi", to:"lanta", color:"#06b6d4", weight:2.5, dash:"8 6" },
+  { from:"lanta", to:"phiphi", color:"#06b6d4", weight:2.5, dash:"8 6" },
+  { from:"phiphi", to:"phuket", color:"#06b6d4", weight:2.5, dash:"8 6" },
+  { from:"phuket", to:"hcmc", color:"#f472b6", weight:2, dash:"6 8" },
+  { from:"hcmc", to:"haneda", color:"#f472b6", weight:2, dash:"6 8", curve:[[22.0, 125.0]] }
 ];
 
 const timeline = [
-  { place:"バンコク（クルンテープ・アピワット中央駅）", dates:"1月5日（火）夕方発",
-    stay:null, color:"#f97316", filled:true,
-    transport:{ mode:"列車", modeColor:"#f97316",
-      text:"南部本線 急行83号（寝台列車）でトランへ",
-      sub:"17:05発 → 翌08:25着（約15時間）｜2等エアコン寝台推奨" }},
-
-  { place:"トラン駅（Trang Station）★下車駅", dates:"1月6日（水）朝着",
-    stay:null, color:"#f97316", filled:true,
-    transport:{ mode:"ミニバン", modeColor:"#10b981",
-      text:"トラン駅前 → パクバラ港（Pak Bara Pier）",
-      sub:"約2時間｜駅前に乗り合いミニバンあり（事前予約も可）" }},
-
-  { place:"パクバラ港（Pak Bara Pier）", dates:"1月6日 昼頃",
-    stay:null, color:"#10b981", filled:false,
-    transport:{ mode:"スピードボート", modeColor:"#06b6d4",
-      text:"パクバラ港 → リペ島（パタヤビーチ桟橋）",
-      sub:"約1.5時間｜ハイシーズンは1日数便運航" }},
-
-  { place:"リペ島（Koh Lipe）", dates:"1月6〜8日",
-    stay:"3泊", color:"#10b981", filled:true,
-    transport:{ mode:"フェリー", modeColor:"#06b6d4",
-      text:"リペ島 → ランタ島（Saladan Pier 経由）→ クラビ（Klong Jilad Pier）",
-      sub:"約4〜5時間｜ハイシーズン限定ルート。ランタ島で乗り換えの場合あり" }},
-
-  { place:"クラビ（Klong Jilad Pier 着）", dates:"1月9〜11日",
-    stay:"3泊", color:"#3b82f6", filled:true,
-    transport:{ mode:"フェリー", modeColor:"#06b6d4",
-      text:"クラビ（Klong Jilad Pier）→ ピピ島（Tonsai Pier）",
-      sub:"約1.5〜2時間｜1日複数便。アオナン(Nopparat Thara Pier)からも乗船可" }},
-
-  { place:"ピピ島（Tonsai Pier 着）", dates:"1月12〜14日",
-    stay:"3泊", color:"#8b5cf6", filled:true,
-    transport:{ mode:"ボート", modeColor:"#06b6d4",
-      text:"ピピ島 → ヤオノイ島",
-      sub:"約1時間｜ハイシーズンはスピードボート運航。またはプーケット経由で乗り継ぎ" }},
-
-  { place:"ヤオノイ島（Koh Yao Noi）", dates:"1月15〜17日",
-    stay:"3泊", color:"#14b8a6", filled:true,
-    transport:{ mode:"ボート", modeColor:"#06b6d4",
-      text:"ヤオノイ島 → プーケット（Bang Rong Pier）",
-      sub:"約30分｜ロングテールボートまたはスピードボート。1日複数便" }},
-
-  { place:"プーケット（Phuket）", dates:"1月18〜22日",
-    stay:"5泊", color:"#ec4899", filled:true,
+  { place:"羽田空港 → ホーチミン", dates:"1月2日（土）",
+    stay:null, color:"#e11d48", filled:true,
     transport:{ mode:"フライト", modeColor:"#f472b6",
-      text:"プーケット国際空港 → ホーチミン（Tan Son Nhat空港）",
-      sub:"約2時間｜VietJet・AirAsia等の直行便あり" }},
+      text:"羽田空港 ➔ タンソンニャット国際空港（ホーチミン）",
+      sub:"直行便でベトナムへ移動" }},
 
-  { place:"ホーチミン（Ho Chi Minh City）→ 帰国", dates:"1月23日（金）",
-    stay:null, color:"#f59e0b", filled:true, transport:null }
+  { place:"ホーチミン（ベトナム）", dates:"1月2日〜1月5日",
+    stay:"3泊4日", color:"#f59e0b", filled:true,
+    transport:{ mode:"フライト", modeColor:"#f472b6",
+      text:"ホーチミン ➔ バンコク（スワンナプーム/ドンムアン）",
+      sub:"1/5 昼〜夕方のフライトでタイへ移動" }},
+
+  { place:"バンコク（クルンテープ・アピワット中央駅）", dates:"1月5日（火）夜発",
+    stay:"1泊（車中泊）", color:"#f97316", filled:true,
+    transport:{ mode:"夜行列車", modeColor:"#f97316",
+      text:"北部本線 特急・急行寝台列車 ➔ チェンマイ駅",
+      sub:"夕方〜夜発 ➔ 翌朝チェンマイ着（約11〜13時間）｜1・2等エアコン寝台推奨" }},
+
+  { place:"チェンマイ（タイ北部）", dates:"1月6日〜1月10日",
+    stay:"4泊5日", color:"#10b981", filled:true,
+    transport:{ mode:"フライト", modeColor:"#f472b6",
+      text:"チェンマイ空港（CNX）➔ クラビ空港（KBV）",
+      sub:"直行便フライト（AirAsia等）で南部のビーチエリアへ一気に移動（約2時間）" }},
+
+  { place:"クラビ（Krabi）", dates:"1月10日〜1月13日",
+    stay:"3泊4日", color:"#3b82f6", filled:true,
+    transport:{ mode:"船・フェリー", modeColor:"#06b6d4",
+      text:"クラビ（クラビタウン/アオナン）➔ ランタ島（Saladan Pier）",
+      sub:"フェリーまたはスピードボート（約2〜2.5時間）" }},
+
+  { place:"ランタ島（Koh Lanta）", dates:"1月13日〜1月16日",
+    stay:"3泊4日", color:"#06b6d4", filled:true,
+    transport:{ mode:"船・フェリー", modeColor:"#06b6d4",
+      text:"ランタ島（Saladan Pier）➔ ピピ島（Tonsai Pier）",
+      sub:"高速船/スピードボート（約1〜1.5時間）" }},
+
+  { place:"ピピ島（Koh Phi Phi）", dates:"1月16日〜1月19日",
+    stay:"3泊4日", color:"#8b5cf6", filled:true,
+    transport:{ mode:"船・フェリー", modeColor:"#06b6d4",
+      text:"ピピ島（Tonsai Pier）➔ プーケット（Rassada Pier）",
+      sub:"大型フェリーまたはスピードボート（約1.5〜2時間）" }},
+
+  { place:"プーケット（Phuket）", dates:"1月19日〜1月22日",
+    stay:"3泊4日", color:"#d946ef", filled:true,
+    transport:{ mode:"フライト", modeColor:"#f472b6",
+      text:"プーケット国際空港（HKT）➔ ホーチミン（SGN）経由 ➔ 羽田空港",
+      sub:"1/22 プーケット発、ホーチミン乗り継ぎで日本帰国" }},
+
+  { place:"羽田空港 到着", dates:"1月22日〜23日",
+    stay:null, color:"#e11d48", filled:true, transport:null }
 ];
 
 
 // ===== MAP RENDERING =====
-const map = L.map('map', { zoomControl: true, scrollWheelZoom: true })
-  .setView([9.0, 100.0], 6);
+const map = L.map('map', { zoomControl: true, scrollWheelZoom: true });
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 18
 }).addTo(map);
 
-const mainPts = places.filter(p => p.type === 'main' || p.type === 'station')
-  .map(p => [p.lat, p.lng]);
-map.fitBounds(mainPts, { padding: [30, 30] });
-
 const byId = id => places.find(p => p.id === id);
 
+// Draw polyline segments
 segments.forEach(seg => {
   const f = byId(seg.from), t = byId(seg.to);
   const pts = [[f.lat, f.lng], ...(seg.curve || []), [t.lat, t.lng]];
@@ -228,6 +198,10 @@ segments.forEach(seg => {
   }).addTo(map);
 });
 
+// Fit map view to SE Asia region
+const seaPoints = places.filter(p => p.id !== 'haneda').map(p => [p.lat, p.lng]);
+map.fitBounds(seaPoints, { padding: [40, 40] });
+
 function mainIcon(label, color) {
   return L.divIcon({ className: '', iconSize: [34, 34], iconAnchor: [17, 17], popupAnchor: [0, -20],
     html: '<div style="width:34px;height:34px;border-radius:50%;background:'+color+
@@ -235,38 +209,15 @@ function mainIcon(label, color) {
       'font-size:12px;font-weight:800;color:#fff;'+
       'box-shadow:0 2px 10px '+color+'66;border:2.5px solid rgba(255,255,255,0.35);">'+label+'</div>' });
 }
-function smallIcon(color, symbol) {
-  return L.divIcon({ className: '', iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -14],
-    html: '<div style="width:22px;height:22px;border-radius:50%;'+
-      'background:'+color+'33;border:2px solid '+color+';'+
-      'display:flex;align-items:center;justify-content:center;'+
-      'font-size:10px;color:'+color+';">'+symbol+'</div>' });
-}
 
 let mainIdx = 1;
 places.forEach(p => {
-  let icon, popupHtml;
-  if (p.type === 'main') {
-    icon = mainIcon(mainIdx++, p.color);
-    popupHtml = '<strong>'+p.name+'（'+p.en+'）</strong>';
-    if (p.dates) popupHtml += '<br>'+p.dates;
-    if (p.stay) popupHtml += '  <span style="color:'+p.color+';font-weight:600">'+p.stay+'</span>';
-    if (p.popExtra) popupHtml += '<br><span style="color:#94a3b8;font-size:12px">'+p.popExtra+'</span>';
-  } else if (p.type === 'station') {
-    icon = mainIcon('🚉', p.color);
-    popupHtml = '<strong>'+p.name+'</strong><br><span class="pop-tag" style="background:'+p.color+';color:#fff">下車駅</span>';
-    if (p.dates) popupHtml += ' '+p.dates;
-    if (p.popExtra) popupHtml += '<br><span style="color:#94a3b8;font-size:12px">'+p.popExtra+'</span>';
-  } else if (p.type === 'train') {
-    icon = smallIcon(p.color, '•');
-    popupHtml = '<strong>'+p.name+'</strong><br><span style="color:#94a3b8;font-size:12px">'+p.sub+'</span>';
-  } else if (p.type === 'pier') {
-    icon = smallIcon('#06b6d4', '⚓');
-    popupHtml = '<strong>'+p.name+'</strong><br><span style="color:#94a3b8;font-size:12px">'+p.sub+'</span>';
-  } else if (p.type === 'ferry-stop') {
-    icon = smallIcon('#06b6d4', '◇');
-    popupHtml = '<strong>'+p.name+'</strong><br><span style="color:#94a3b8;font-size:12px">'+p.sub+'</span>';
-  }
+  let icon = mainIcon(p.type === 'transit' ? '🚂' : (p.id === 'haneda' ? '✈️' : mainIdx++), p.color);
+  let popupHtml = '<strong>'+p.name+'（'+p.en+'）</strong>';
+  if (p.dates) popupHtml += '<br>'+p.dates;
+  if (p.stay) popupHtml += ' <span style="color:'+p.color+';font-weight:700">［'+p.stay+'］</span>';
+  if (p.popExtra) popupHtml += '<br><span style="color:#94a3b8;font-size:12px">'+p.popExtra+'</span>';
+
   L.marker([p.lat, p.lng], { icon: icon }).addTo(map)
     .bindPopup(popupHtml, { className: 'custom-popup' });
 });
