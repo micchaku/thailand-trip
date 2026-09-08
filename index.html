@@ -67,7 +67,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 <div id="map"></div>
 <div class="panel">
   <h1>羽田発着 ベトナム・タイ（北部＆南部離島）縦断ルート</h1>
-  <p class="subtitle">1月2日〜1月22日（20泊21日）｜滞在期間・宿泊数明記プラン</p>
+  <p class="subtitle">1月2日〜1月23日（21泊22日）｜滞在期間・宿泊数明記プラン</p>
   <div class="timeline" id="timeline"></div>
   <div class="legend-bar">
     <div class="leg"><div class="leg-line dashed" style="--lc:#f472b6"></div> 国際・国内フライト</div>
@@ -82,7 +82,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 // ===== DATA =====
 const places = [
   { id:"haneda", name:"羽田空港", en:"Haneda Airport", lat:35.5494, lng:139.7798,
-    sub:"日本発着拠点", dates:"1/2 発 / 1/22 帰国", stay:"", color:"#e11d48", type:"main" },
+    sub:"日本発着拠点", dates:"1/2 発 / 1/23 帰国", stay:"", color:"#e11d48", type:"main" },
 
   { id:"hcmc", name:"ホーチミン", en:"Ho Chi Minh City", lat:10.8231, lng:106.6297,
     sub:"ベトナム（滞在＆経由）", dates:"1/2〜1/5", stay:"3泊4日",
@@ -109,7 +109,7 @@ const places = [
     popExtra:"マヤベイ＆透明度抜群のエメラルドグリーン海", color:"#8b5cf6", type:"main" },
 
   { id:"phuket", name:"プーケット", en:"Phuket", lat:7.8804, lng:98.3923,
-    sub:"パトン / オールドタウン", dates:"1/19〜1/22", stay:"3泊4日",
+    sub:"パトン / オールドタウン", dates:"1/19〜1/23", stay:"4泊5日",
     popExtra:"タイ最大のリゾート島で締めくくり", color:"#d946ef", type:"main" }
 ];
 
@@ -126,7 +126,7 @@ const segments = [
 ];
 
 const timeline = [
-  { place:"羽田空港 → ホーチミン", dates:"1月2日（土）",
+  { place:"羽田空港 → ホーチミン", dates:"1月2日",
     stay:null, color:"#e11d48", filled:true,
     transport:{ mode:"フライト", modeColor:"#f472b6",
       text:"羽田空港 ➔ タンソンニャット国際空港（ホーチミン）",
@@ -138,7 +138,7 @@ const timeline = [
       text:"ホーチミン ➔ バンコク（スワンナプーム/ドンムアン）",
       sub:"1/5 昼〜夕方のフライトでタイへ移動" }},
 
-  { place:"バンコク（クルンテープ・アピワット中央駅）", dates:"1月5日（火）夜発",
+  { place:"バンコク（クルンテープ・アピワット中央駅）", dates:"1月5日 夜発",
     stay:"1泊（車中泊）", color:"#f97316", filled:true,
     transport:{ mode:"夜行列車", modeColor:"#f97316",
       text:"北部本線 特急・急行寝台列車 ➔ チェンマイ駅",
@@ -168,13 +168,13 @@ const timeline = [
       text:"ピピ島（Tonsai Pier）➔ プーケット（Rassada Pier）",
       sub:"大型フェリーまたはスピードボート（約1.5〜2時間）" }},
 
-  { place:"プーケット（Phuket）", dates:"1月19日〜1月22日",
-    stay:"3泊4日", color:"#d946ef", filled:true,
+  { place:"プーケット（Phuket）", dates:"1月19日〜1月23日",
+    stay:"4泊5日", color:"#d946ef", filled:true,
     transport:{ mode:"フライト", modeColor:"#f472b6",
       text:"プーケット国際空港（HKT）➔ ホーチミン（SGN）経由 ➔ 羽田空港",
-      sub:"1/22 プーケット発、ホーチミン乗り継ぎで日本帰国" }},
+      sub:"1/23 プーケット発、ホーチミン乗り継ぎで日本帰国" }},
 
-  { place:"羽田空港 到着", dates:"1月22日〜23日",
+  { place:"羽田空港 到着", dates:"1月23日〜24日",
     stay:null, color:"#e11d48", filled:true, transport:null }
 ];
 
