@@ -39,18 +39,19 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
   font-size: 0.82rem; line-height: 1.6;
 }
 .tl-transport .mode {
-  display: inline-block; font-size: 0.7rem; font-weight: 600;
-  padding: 1px 6px; border-radius: 4px; margin-right: 4px;
+  display: inline-block; font-size: 0.72rem; font-weight: 700;
+  padding: 2px 8px; border-radius: 4px; margin-right: 6px;
   color: #fff; background: var(--tc);
 }
 .tl-transport .detail { color: #cbd5e1; }
 .tl-transport .sub { color: #64748b; font-size: 0.78rem; }
 
-/* Legend */
-.legend-bar { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); }
-.leg { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: #94a3b8; }
-.leg-line { width: 20px; height: 3px; border-radius: 2px; }
-.leg-line.dashed { background: repeating-linear-gradient(90deg, var(--lc) 0 6px, transparent 6px 10px); height: 2px; }
+/* Legend (移動手段の凡例枠) */
+.legend-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); }
+.leg { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: #cbd5e1; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
+.leg-badge { font-weight: 700; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; color: #fff; }
+.leg-line { width: 18px; height: 3px; border-radius: 2px; }
+.leg-line.dashed { background: repeating-linear-gradient(90deg, var(--lc) 0 5px, transparent 5px 8px); height: 2px; }
 
 /* Leaflet overrides */
 .custom-popup .leaflet-popup-content-wrapper {
@@ -67,13 +68,31 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 <div id="map"></div>
 <div class="panel">
   <h1>羽田発着 ベトナム・タイ（北部＆南部離島）縦断ルート</h1>
-  <p class="subtitle">1月2日〜1月23日（21泊22日）｜滞在期間・宿泊数明記プラン</p>
+  <p class="subtitle">1月2日〜1月23日（21泊22日）｜滞在期間・移動手段明確プラン</p>
   <div class="timeline" id="timeline"></div>
+  
+  <!-- 移動手段の凡例枠 -->
   <div class="legend-bar">
-    <div class="leg"><div class="leg-line dashed" style="--lc:#f472b6"></div> 国際・国内フライト</div>
-    <div class="leg"><div class="leg-line" style="--lc:#f97316; background:var(--lc)"></div> 夜行列車</div>
-    <div class="leg"><div class="leg-line" style="--lc:#eab308; background:var(--lc)"></div> 夜行バス</div>
-    <div class="leg"><div class="leg-line dashed" style="--lc:#06b6d4"></div> フェリー／ボート</div>
+    <div class="leg">
+      <span class="leg-badge" style="background:#f472b6">✈️ 飛行機</span>
+      <div class="leg-line dashed" style="--lc:#f472b6"></div>
+      <span>国際・国内フライト</span>
+    </div>
+    <div class="leg">
+      <span class="leg-badge" style="background:#f97316">🚂 夜行列車</span>
+      <div class="leg-line" style="--lc:#f97316; background:var(--lc)"></div>
+      <span>寝台列車</span>
+    </div>
+    <div class="leg">
+      <span class="leg-badge" style="background:#eab308">🚌 夜行バス</span>
+      <div class="leg-line" style="--lc:#eab308; background:var(--lc)"></div>
+      <span>長距離バス</span>
+    </div>
+    <div class="leg">
+      <span class="leg-badge" style="background:#06b6d4">⛴️ 船・フェリー</span>
+      <div class="leg-line dashed" style="--lc:#06b6d4"></div>
+      <span>高速船／ボート</span>
+    </div>
   </div>
 </div>
 
@@ -130,55 +149,55 @@ const segments = [
 const timeline = [
   { place:"羽田空港 → ホーチミン", dates:"1月2日（土）",
     stay:null, color:"#e11d48", filled:true,
-    transport:{ mode:"フライト", modeColor:"#f472b6",
+    transport:{ mode:"✈️ 飛行機", modeColor:"#f472b6",
       text:"羽田空港 ➔ タンソンニャット国際空港（ホーチミン）",
       sub:"直行便でベトナムへ移動" }},
 
   { place:"ホーチミン（ベトナム）", dates:"1月2日（土）〜1月5日（火）",
     stay:"3泊4日", color:"#f59e0b", filled:true,
-    transport:{ mode:"フライト", modeColor:"#f472b6",
+    transport:{ mode:"✈️ 飛行機", modeColor:"#f472b6",
       text:"ホーチミン ➔ バンコク（スワンナプーム/ドンムアン）",
       sub:"1/5（火）昼〜夕方のフライトでタイへ移動" }},
 
   { place:"バンコク（クルンテープ・アピワット中央駅）", dates:"1月5日（火）夜発",
     stay:"1泊（車中泊）", color:"#f97316", filled:true,
-    transport:{ mode:"夜行列車", modeColor:"#f97316",
+    transport:{ mode:"🚂 夜行列車", modeColor:"#f97316",
       text:"北部本線 特急・急行寝台列車 ➔ チェンマイ駅",
       sub:"夕方〜夜発 ➔ 翌朝1/6（水）チェンマイ着（約11〜13時間）｜1・2等エアコン寝台推奨" }},
 
   { place:"チェンマイ（タイ北部）", dates:"1月6日（水）〜1月10日（日）",
     stay:"4泊5日", color:"#10b981", filled:true,
-    transport:{ mode:"フライト", modeColor:"#f472b6",
+    transport:{ mode:"✈️ 飛行機", modeColor:"#f472b6",
       text:"チェンマイ空港（CNX）➔ バンコク（DMK/BKK）",
       sub:"1/10（日）午前便でバンコクへ移動（約1.5時間）" }},
 
   { place:"バンコク（南バスターミナル等）", dates:"1月10日（日）夜発",
     stay:"1泊（車中泊）", color:"#eab308", filled:true,
-    transport:{ mode:"夜行バス", modeColor:"#eab308",
+    transport:{ mode:"🚌 夜行バス", modeColor:"#eab308",
       text:"長距離VIPバス ➔ クラビ・バスターミナル",
       sub:"夕方〜夜発 ➔ 翌朝1/11（月）クラビ着（約12時間）" }},
 
   { place:"クラビ（Krabi）", dates:"1月11日（月）〜1月14日（木）",
     stay:"3泊4日", color:"#3b82f6", filled:true,
-    transport:{ mode:"船・フェリー", modeColor:"#06b6d4",
+    transport:{ mode:"⛴️ 船・フェリー", modeColor:"#06b6d4",
       text:"クラビ（クラビタウン/アオナン）➔ ランタ島（Saladan Pier）",
       sub:"フェリーまたはスピードボート（約2〜2.5時間）" }},
 
   { place:"ランタ島（Koh Lanta）", dates:"1月14日（木）〜1月17日（日）",
     stay:"3泊4日", color:"#06b6d4", filled:true,
-    transport:{ mode:"船・フェリー", modeColor:"#06b6d4",
+    transport:{ mode:"⛴️ 船・フェリー", modeColor:"#06b6d4",
       text:"ランタ島（Saladan Pier）➔ ピピ島（Tonsai Pier）",
       sub:"高速船/スピードボート（約1〜1.5時間）" }},
 
   { place:"ピピ島（Koh Phi Phi）", dates:"1月17日（日）〜1月20日（水）",
     stay:"3泊4日", color:"#8b5cf6", filled:true,
-    transport:{ mode:"船・フェリー", modeColor:"#06b6d4",
+    transport:{ mode:"⛴️ 船・フェリー", modeColor:"#06b6d4",
       text:"ピピ島（Tonsai Pier）➔ プーケット（Rassada Pier）",
       sub:"大型フェリーまたはスピードボート（約1.5〜2時間）" }},
 
   { place:"プーケット（Phuket）", dates:"1月20日（水）〜1月23日（土）",
     stay:"3泊4日", color:"#d946ef", filled:true,
-    transport:{ mode:"フライト", modeColor:"#f472b6",
+    transport:{ mode:"✈️ 飛行機", modeColor:"#f472b6",
       text:"プーケット国際空港（HKT）➔ ホーチミン（SGN）経由 ➔ 羽田空港",
       sub:"1/23（土）プーケット発、ホーチミン乗り継ぎで日本帰国" }},
 
