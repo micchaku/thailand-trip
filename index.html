@@ -18,7 +18,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 .timeline { position: relative; padding-left: 28px; }
 .timeline::before {
   content: ''; position: absolute; left: 12px; top: 8px; bottom: 8px;
-  width: 2px; background: linear-gradient(180deg, #ec4899, #f59e0b, #f97316, #10b981, #3b82f6, #06b6d4, #8b5cf6, #d946ef);
+  width: 2px; background: linear-gradient(180deg, #ec4899, #f59e0b, #f97316, #10b981, #eab308, #3b82f6, #06b6d4, #8b5cf6, #d946ef);
 }
 .tl-item { position: relative; padding: 0 0 20px 20px; }
 .tl-item:last-child { padding-bottom: 0; }
@@ -72,6 +72,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
   <div class="legend-bar">
     <div class="leg"><div class="leg-line dashed" style="--lc:#f472b6"></div> 国際・国内フライト</div>
     <div class="leg"><div class="leg-line" style="--lc:#f97316; background:var(--lc)"></div> 夜行列車</div>
+    <div class="leg"><div class="leg-line" style="--lc:#eab308; background:var(--lc)"></div> 夜行バス</div>
     <div class="leg"><div class="leg-line dashed" style="--lc:#06b6d4"></div> フェリー／ボート</div>
   </div>
 </div>
@@ -82,34 +83,34 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 // ===== DATA =====
 const places = [
   { id:"haneda", name:"羽田空港", en:"Haneda Airport", lat:35.5494, lng:139.7798,
-    sub:"日本発着拠点", dates:"1/2 発 / 1/23 帰国", stay:"", color:"#e11d48", type:"main" },
+    sub:"日本発着拠点", dates:"1/2(土)発 / 1/23(土)帰国", stay:"", color:"#e11d48", type:"main" },
 
   { id:"hcmc", name:"ホーチミン", en:"Ho Chi Minh City", lat:10.8231, lng:106.6297,
-    sub:"ベトナム（滞在＆経由）", dates:"1/2〜1/5", stay:"3泊4日",
+    sub:"ベトナム（滞在＆経由）", dates:"1/2(土)〜1/5(火)", stay:"3泊4日",
     popExtra:"絶品グルメとコロニアル街歩き", color:"#f59e0b", type:"main" },
 
   { id:"bangkok", name:"バンコク", en:"Bangkok", lat:13.7563, lng:100.5018,
-    sub:"クルンテープ・アピワット中央駅経由", dates:"1/5", stay:"（1泊 車中泊）",
-    popExtra:"夜行列車乗り継ぎ拠点", color:"#f97316", type:"transit" },
+    sub:"夜行列車・夜行バス乗り継ぎ拠点", dates:"1/5(火), 1/10(日)", stay:"中継点（車中泊2回）",
+    popExtra:"1/5夜行列車 / 1/10夜行バス発着", color:"#f97316", type:"transit" },
 
   { id:"chiangmai", name:"チェンマイ", en:"Chiang Mai", lat:18.7883, lng:98.9853,
-    sub:"タイ北部 古都", dates:"1/6〜1/10", stay:"4泊5日",
+    sub:"タイ北部 古都", dates:"1/6(水)〜1/10(日)", stay:"4泊5日",
     popExtra:"カフェ巡り、寺院散策、ゆったり滞在", color:"#10b981", type:"main" },
 
   { id:"krabi", name:"クラビ", en:"Krabi", lat:8.0863, lng:98.9063,
-    sub:"アオナン / ライレイビーチ", dates:"1/10〜1/13", stay:"3泊4日",
+    sub:"アオナン / ライレイビーチ", dates:"1/11(月)〜1/14(木)", stay:"3泊4日",
     popExtra:"ダイナミックな石灰岩の絶景", color:"#3b82f6", type:"main" },
 
   { id:"lanta", name:"ランタ島", en:"Koh Lanta", lat:7.6292, lng:99.0389,
-    sub:"サラダン港着", dates:"1/13〜1/16", stay:"3泊4日",
+    sub:"サラダン港着", dates:"1/14(木)〜1/17(日)", stay:"3泊4日",
     popExtra:"欧米人に人気の落ち着いた雰囲気の離島", color:"#06b6d4", type:"main" },
 
   { id:"phiphi", name:"ピピ島", en:"Koh Phi Phi", lat:7.7407, lng:98.7784,
-    sub:"トンサイ港着", dates:"1/16〜1/19", stay:"3泊4日",
+    sub:"トンサイ港着", dates:"1/17(日)〜1/20(水)", stay:"3泊4日",
     popExtra:"マヤベイ＆透明度抜群のエメラルドグリーン海", color:"#8b5cf6", type:"main" },
 
   { id:"phuket", name:"プーケット", en:"Phuket", lat:7.8804, lng:98.3923,
-    sub:"パトン / オールドタウン", dates:"1/19〜1/23", stay:"4泊5日",
+    sub:"パトン / オールドタウン", dates:"1/20(水)〜1/23(土)", stay:"3泊4日",
     popExtra:"タイ最大のリゾート島で締めくくり", color:"#d946ef", type:"main" }
 ];
 
@@ -117,7 +118,8 @@ const segments = [
   { from:"haneda", to:"hcmc", color:"#f472b6", weight:2, dash:"6 8", curve:[[22.0, 125.0]] },
   { from:"hcmc", to:"bangkok", color:"#f472b6", weight:2, dash:"6 8" },
   { from:"bangkok", to:"chiangmai", color:"#f97316", weight:3, dash:null },
-  { from:"chiangmai", to:"krabi", color:"#f472b6", weight:2, dash:"6 8", curve:[[13.0, 97.0]] },
+  { from:"chiangmai", to:"bangkok", color:"#f472b6", weight:2, dash:"6 8" },
+  { from:"bangkok", to:"krabi", color:"#eab308", weight:3, dash:null },
   { from:"krabi", to:"lanta", color:"#06b6d4", weight:2.5, dash:"8 6" },
   { from:"lanta", to:"phiphi", color:"#06b6d4", weight:2.5, dash:"8 6" },
   { from:"phiphi", to:"phuket", color:"#06b6d4", weight:2.5, dash:"8 6" },
@@ -126,55 +128,61 @@ const segments = [
 ];
 
 const timeline = [
-  { place:"羽田空港 → ホーチミン", dates:"1月2日",
+  { place:"羽田空港 → ホーチミン", dates:"1月2日（土）",
     stay:null, color:"#e11d48", filled:true,
     transport:{ mode:"フライト", modeColor:"#f472b6",
       text:"羽田空港 ➔ タンソンニャット国際空港（ホーチミン）",
       sub:"直行便でベトナムへ移動" }},
 
-  { place:"ホーチミン（ベトナム）", dates:"1月2日〜1月5日",
+  { place:"ホーチミン（ベトナム）", dates:"1月2日（土）〜1月5日（火）",
     stay:"3泊4日", color:"#f59e0b", filled:true,
     transport:{ mode:"フライト", modeColor:"#f472b6",
       text:"ホーチミン ➔ バンコク（スワンナプーム/ドンムアン）",
-      sub:"1/5 昼〜夕方のフライトでタイへ移動" }},
+      sub:"1/5（火）昼〜夕方のフライトでタイへ移動" }},
 
-  { place:"バンコク（クルンテープ・アピワット中央駅）", dates:"1月5日 夜発",
+  { place:"バンコク（クルンテープ・アピワット中央駅）", dates:"1月5日（火）夜発",
     stay:"1泊（車中泊）", color:"#f97316", filled:true,
     transport:{ mode:"夜行列車", modeColor:"#f97316",
       text:"北部本線 特急・急行寝台列車 ➔ チェンマイ駅",
-      sub:"夕方〜夜発 ➔ 翌朝チェンマイ着（約11〜13時間）｜1・2等エアコン寝台推奨" }},
+      sub:"夕方〜夜発 ➔ 翌朝1/6（水）チェンマイ着（約11〜13時間）｜1・2等エアコン寝台推奨" }},
 
-  { place:"チェンマイ（タイ北部）", dates:"1月6日〜1月10日",
+  { place:"チェンマイ（タイ北部）", dates:"1月6日（水）〜1月10日（日）",
     stay:"4泊5日", color:"#10b981", filled:true,
     transport:{ mode:"フライト", modeColor:"#f472b6",
-      text:"チェンマイ空港（CNX）➔ クラビ空港（KBV）",
-      sub:"直行便フライト（AirAsia等）で南部のビーチエリアへ一気に移動（約2時間）" }},
+      text:"チェンマイ空港（CNX）➔ バンコク（DMK/BKK）",
+      sub:"1/10（日）午前便でバンコクへ移動（約1.5時間）" }},
 
-  { place:"クラビ（Krabi）", dates:"1月10日〜1月13日",
+  { place:"バンコク（南バスターミナル等）", dates:"1月10日（日）夜発",
+    stay:"1泊（車中泊）", color:"#eab308", filled:true,
+    transport:{ mode:"夜行バス", modeColor:"#eab308",
+      text:"長距離VIPバス ➔ クラビ・バスターミナル",
+      sub:"夕方〜夜発 ➔ 翌朝1/11（月）クラビ着（約12時間）" }},
+
+  { place:"クラビ（Krabi）", dates:"1月11日（月）〜1月14日（木）",
     stay:"3泊4日", color:"#3b82f6", filled:true,
     transport:{ mode:"船・フェリー", modeColor:"#06b6d4",
       text:"クラビ（クラビタウン/アオナン）➔ ランタ島（Saladan Pier）",
       sub:"フェリーまたはスピードボート（約2〜2.5時間）" }},
 
-  { place:"ランタ島（Koh Lanta）", dates:"1月13日〜1月16日",
+  { place:"ランタ島（Koh Lanta）", dates:"1月14日（木）〜1月17日（日）",
     stay:"3泊4日", color:"#06b6d4", filled:true,
     transport:{ mode:"船・フェリー", modeColor:"#06b6d4",
       text:"ランタ島（Saladan Pier）➔ ピピ島（Tonsai Pier）",
       sub:"高速船/スピードボート（約1〜1.5時間）" }},
 
-  { place:"ピピ島（Koh Phi Phi）", dates:"1月16日〜1月19日",
+  { place:"ピピ島（Koh Phi Phi）", dates:"1月17日（日）〜1月20日（水）",
     stay:"3泊4日", color:"#8b5cf6", filled:true,
     transport:{ mode:"船・フェリー", modeColor:"#06b6d4",
       text:"ピピ島（Tonsai Pier）➔ プーケット（Rassada Pier）",
       sub:"大型フェリーまたはスピードボート（約1.5〜2時間）" }},
 
-  { place:"プーケット（Phuket）", dates:"1月19日〜1月23日",
-    stay:"4泊5日", color:"#d946ef", filled:true,
+  { place:"プーケット（Phuket）", dates:"1月20日（水）〜1月23日（土）",
+    stay:"3泊4日", color:"#d946ef", filled:true,
     transport:{ mode:"フライト", modeColor:"#f472b6",
       text:"プーケット国際空港（HKT）➔ ホーチミン（SGN）経由 ➔ 羽田空港",
-      sub:"1/23 プーケット発、ホーチミン乗り継ぎで日本帰国" }},
+      sub:"1/23（土）プーケット発、ホーチミン乗り継ぎで日本帰国" }},
 
-  { place:"羽田空港 到着", dates:"1月23日〜24日",
+  { place:"羽田空港 到着", dates:"1月23日（土）〜24日（日）",
     stay:null, color:"#e11d48", filled:true, transport:null }
 ];
 
@@ -212,7 +220,7 @@ function mainIcon(label, color) {
 
 let mainIdx = 1;
 places.forEach(p => {
-  let icon = mainIcon(p.type === 'transit' ? '🚂' : (p.id === 'haneda' ? '✈️' : mainIdx++), p.color);
+  let icon = mainIcon(p.type === 'transit' ? '🔄' : (p.id === 'haneda' ? '✈️' : mainIdx++), p.color);
   let popupHtml = '<strong>'+p.name+'（'+p.en+'）</strong>';
   if (p.dates) popupHtml += '<br>'+p.dates;
   if (p.stay) popupHtml += ' <span style="color:'+p.color+';font-weight:700">［'+p.stay+'］</span>';
