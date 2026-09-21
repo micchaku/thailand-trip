@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ベトナム・タイ（北部・南部離島）周遊ルートマップ</title>
+<title>ベトナム・タイ周遊ルートマップ（宿泊先管理対応版）</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif; background: #0f172a; color: #e0e0e0; }
-#map { width: 100%; height: 55vh; min-height: 360px; }
+#map { width: 100%; height: 50vh; min-height: 340px; }
 
 .panel { padding: 24px; max-width: 960px; margin: 0 auto; }
 .panel h1 { font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
@@ -32,7 +32,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 
 /* 滞在（STAY）カードデザイン */
 .tl-item.type-stay .card {
-  background: rgba(30, 41, 59, 0.8);
+  background: rgba(30, 41, 59, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-left: 4px solid var(--c);
   border-radius: 10px;
@@ -65,6 +65,46 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 .tl-desc { font-size: 0.83rem; color: #cbd5e1; margin-top: 6px; line-height: 1.5; }
 .tl-sub { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
 
+/* 宿泊先情報専用ボックス */
+.hotel-box {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+.hotel-box.booked {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.05);
+}
+.hotel-title {
+  font-weight: 700;
+  color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.hotel-status-booked {
+  background: #10b981;
+  color: #fff;
+  font-size: 0.68rem;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 700;
+}
+.hotel-status-pending {
+  background: #475569;
+  color: #cbd5e1;
+  font-size: 0.68rem;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+.hotel-info-line { color: #94a3b8; margin-top: 2px; line-height: 1.4; word-break: break-all; }
+.hotel-link { color: #38bdf8; text-decoration: underline; font-weight: 500; }
+.hotel-link:hover { color: #7dd3fc; }
+
 /* Legend (移動手段の凡例枠) */
 .legend-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.08); }
 .leg { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: #cbd5e1; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
@@ -84,8 +124,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 
 <div id="map"></div>
 <div class="panel">
-  <h1>ベトナム・タイ周遊ルート［滞在＆移動 分離プラン］</h1>
-  <p class="subtitle">1月2日〜1月23日（21泊22日）｜滞在地と移動ステップを明確化</p>
+  <h1>ベトナム・タイ周遊ルート［宿泊先管理対応］</h1>
+  <p class="subtitle">1月2日〜1月23日（21泊22日）｜宿泊先・住所・予約状況のメモ付き</p>
 
   <div class="timeline" id="timeline"></div>
 
@@ -104,13 +144,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 // 地図用の地点データ
 const places = [
   { id:"haneda", name:"羽田空港", en:"Haneda Airport", lat:35.5494, lng:139.7798, color:"#e11d48", type:"main" },
-  { id:"hcmc", name:"ホーチミン", en:"Ho Chi Minh City", lat:10.8231, lng:106.6297, color:"#f59e0b", stay:"3泊4日", popExtra:"グルメ・コロニアル街歩き" },
+  { id:"hcmc", name:"ホーチミン", en:"Ho Chi Minh City", lat:10.8231, lng:106.6297, color:"#f59e0b", stay:"3泊4日", popExtra:"手配済：Airbnb" },
   { id:"bangkok", name:"バンコク", en:"Bangkok", lat:13.7563, lng:100.5018, color:"#f97316", stay:"中継", popExtra:"夜行列車/バス乗り継ぎ" },
-  { id:"chiangmai", name:"チェンマイ", en:"Chiang Mai", lat:18.7883, lng:98.9853, color:"#10b981", stay:"4泊5日", popExtra:"古都カフェ＆寺院巡り" },
-  { id:"krabi", name:"クラビ", en:"Krabi", lat:8.0863, lng:98.9063, color:"#3b82f6", stay:"3泊4日", popExtra:"石灰岩とビーチの絶景" },
-  { id:"lanta", name:"ランタ島", en:"Koh Lanta", lat:7.6292, lng:99.0389, color:"#06b6d4", stay:"3泊4日", popExtra:"静かな欧米風リゾート" },
-  { id:"phiphi", name:"ピピ島", en:"Koh Phi Phi", lat:7.7407, lng:98.7784, color:"#8b5cf6", stay:"3泊4日", popExtra:"透明度抜群のエメラルド海" },
-  { id:"phuket", name:"プーケット", en:"Phuket", lat:7.8804, lng:98.3923, color:"#d946ef", stay:"3泊4日", popExtra:"タイ最大のリゾート島" }
+  { id:"chiangmai", name:"チェンマイ", en:"Chiang Mai", lat:18.7883, lng:98.9853, color:"#10b981", stay:"4泊5日", popExtra:"宿泊先手配予定" },
+  { id:"krabi", name:"クラビ", en:"Krabi", lat:8.0863, lng:98.9063, color:"#3b82f6", stay:"3泊4日", popExtra:"宿泊先手配予定" },
+  { id:"lanta", name:"ランタ島", en:"Koh Lanta", lat:7.6292, lng:99.0389, color:"#06b6d4", stay:"3泊4日", popExtra:"宿泊先手配予定" },
+  { id:"phiphi", name:"ピピ島", en:"Koh Phi Phi", lat:7.7407, lng:98.7784, color:"#8b5cf6", stay:"3泊4日", popExtra:"宿泊先手配予定" },
+  { id:"phuket", name:"プーケット", en:"Phuket", lat:7.8804, lng:98.3923, color:"#d946ef", stay:"3泊4日", popExtra:"宿泊先手配予定" }
 ];
 
 // 地図のルート線データ
@@ -127,7 +167,7 @@ const segments = [
   { from:"hcmc", to:"haneda", color:"#f472b6", weight:2, dash:"6 8", curve:[[22.0, 125.0]] }
 ];
 
-// タイムラインデータ（STAYとMOVEを完全に分けた構造）
+// タイムラインデータ（宿泊先・住所・URLプロパティを追加）
 const timelineData = [
   {
     type: "move",
@@ -143,7 +183,14 @@ const timelineData = [
     title: "ホーチミン（ベトナム）",
     dates: "1月2日（土）〜 1月5日（火）",
     stayTag: "3泊4日",
-    desc: "フランス統治時代の街並み散策、ベトナム料理・カフェ巡り"
+    desc: "フランス統治時代の街並み散策、ベトナム料理・カフェ巡り",
+    // 宿泊先情報（手配済み）
+    hotel: {
+      isBooked: true,
+      name: "Airbnb（ホーチミンのリスティング物件）",
+      address: "予約完了（詳細住所はAirbnb管理画面参照）",
+      url: "https://www.airbnb.jp/rooms/20804337?source_impression_id=p3_1789962434_P3Dm3-ls1heiNC8A"
+    }
   },
   {
     type: "move",
@@ -167,7 +214,13 @@ const timelineData = [
     title: "チェンマイ（タイ北部）",
     dates: "1月6日（水）〜 1月10日（日）",
     stayTag: "4泊5日",
-    desc: "旧市街の寺院巡り、旧市街カフェ散策、ナイトバザール"
+    desc: "旧市街の寺院巡り、旧市街カフェ散策、ナイトバザール",
+    hotel: {
+      isBooked: false,
+      name: "未定（手配予定）",
+      address: "-",
+      url: null
+    }
   },
   {
     type: "move",
@@ -191,7 +244,13 @@ const timelineData = [
     title: "クラビ（Krabi）",
     dates: "1月11日（月）〜 1月14日（木）",
     stayTag: "3泊4日",
-    desc: "アオナンビーチ滞在、ライレイビーチでのロッククライミング・絶景鑑賞"
+    desc: "アオナンビーチ滞在、ライレイビーチでのロッククライミング・絶景鑑賞",
+    hotel: {
+      isBooked: false,
+      name: "未定（手配予定）",
+      address: "-",
+      url: null
+    }
   },
   {
     type: "move",
@@ -207,7 +266,13 @@ const timelineData = [
     title: "ランタ島（Koh Lanta）",
     dates: "1月14日（木）〜 1月17日（日）",
     stayTag: "3泊4日",
-    desc: "静かなロングビーチでのんびり滞在、欧米風の落ち着いたビーチリゾート"
+    desc: "静かなロングビーチでのんびり滞在、欧米風の落ち着いたビーチリゾート",
+    hotel: {
+      isBooked: false,
+      name: "未定（手配予定）",
+      address: "-",
+      url: null
+    }
   },
   {
     type: "move",
@@ -223,7 +288,13 @@ const timelineData = [
     title: "ピピ島（Koh Phi Phi）",
     dates: "1月17日（日）〜 1月20日（水）",
     stayTag: "3泊4日",
-    desc: "マヤベイ観光、ビューポイント登山、シュノーケリング"
+    desc: "マヤベイ観光、ビューポイント登山、シュノーケリング",
+    hotel: {
+      isBooked: false,
+      name: "未定（手配予定）",
+      address: "-",
+      url: null
+    }
   },
   {
     type: "move",
@@ -239,7 +310,13 @@ const timelineData = [
     title: "プーケット（Phuket）",
     dates: "1月20日（水）〜 1月23日（土）",
     stayTag: "3泊4日",
-    desc: "パトンビーチ、オールドタウン散策、最終日のリゾートを満喫"
+    desc: "パトンビーチ、オールドタウン散策、最終日のリゾートを満喫",
+    hotel: {
+      isBooked: false,
+      name: "未定（手配予定）",
+      address: "-",
+      url: null
+    }
   },
   {
     type: "move",
@@ -314,6 +391,26 @@ timelineData.forEach(item => {
     html += `</div>`;
     html += `<div class="tl-dates">${item.dates}</div>`;
     if (item.desc) html += `<div class="tl-desc">${item.desc}</div>`;
+
+    // 宿泊先（Hotel/Airbnb）情報ボックスの生成
+    if (item.hotel) {
+      const h = item.hotel;
+      const statusBadge = h.isBooked 
+        ? `<span class="hotel-status-booked">手配済み</span>` 
+        : `<span class="hotel-status-pending">未手配</span>`;
+      
+      html += `<div class="hotel-box ${h.isBooked ? 'booked' : ''}">`;
+      html += `<div class="hotel-title">🏠 宿泊先: ${h.name} ${statusBadge}</div>`;
+      
+      if (h.address && h.address !== '-') {
+        html += `<div class="hotel-info-line">📍 住所/メモ: ${h.address}</div>`;
+      }
+      if (h.url) {
+        html += `<div class="hotel-info-line">🔗 予約ページ: <a class="hotel-link" href="${h.url}" target="_blank" rel="noopener">リンクを開く ↗</a></div>`;
+      }
+      html += `</div>`;
+    }
+
   } else {
     html += `<div class="tl-badge">${item.badge}</div>`;
     html += `<div class="tl-header">`;
