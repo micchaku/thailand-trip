@@ -18,9 +18,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 .timeline { position: relative; padding-left: 28px; }
 .timeline::before {
   content: ''; position: absolute; left: 12px; top: 8px; bottom: 8px;
-  width: 2px; background: linear-gradient(180deg, #ec4899, #f59e0b, #f97316, #10b981, #eab308, #3b82f6, #06b6d4, #8b5cf6, #d946ef);
+  width: 2px; background: linear-gradient(180deg, #f472b6, #f59e0b, #f97316, #10b981, #f472b6, #eab308, #3b82f6, #06b6d4, #8b5cf6, #d946ef);
 }
-.tl-item { position: relative; padding: 0 0 20px 20px; }
+.tl-item { position: relative; padding: 0 0 18px 20px; }
 .tl-item:last-child { padding-bottom: 0; }
 .tl-dot {
   position: absolute; left: -22px; top: 4px;
@@ -29,7 +29,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 }
 .tl-dot.filled { background: var(--c); }
 .tl-header { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-.tl-place { font-weight: 700; font-size: 1rem; color: #fff; }
+.tl-place { font-weight: 700; font-size: 0.98rem; color: #fff; }
 .tl-dates { font-size: 0.8rem; color: #94a3b8; }
 .tl-stay { font-size: 0.8rem; color: var(--c); font-weight: 700; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; }
 
@@ -68,7 +68,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino San
 <div id="map"></div>
 <div class="panel">
   <h1>羽田発着 ベトナム・タイ（北部＆南部離島）縦断ルート</h1>
-  <p class="subtitle">1月2日〜1月23日（21泊22日）｜滞在期間・移動手段明確プラン</p>
+  <p class="subtitle">1月2日〜1月23日（21泊22日）｜滞在地＆全移動ステップ明記プラン</p>
   <div class="timeline" id="timeline"></div>
   
   <!-- 移動手段の凡例枠 -->
@@ -146,63 +146,79 @@ const segments = [
   { from:"hcmc", to:"haneda", color:"#f472b6", weight:2, dash:"6 8", curve:[[22.0, 125.0]] }
 ];
 
+// 「滞在地」と「移動ステップ」をすべて独立した項目として配置
 const timeline = [
-  { place:"羽田空港 → ホーチミン", dates:"1月2日（土）",
-    stay:null, color:"#e11d48", filled:true,
+  { place:"移動：羽田空港 ➔ ホーチミン", dates:"1月2日（土）",
+    stay:null, color:"#f472b6", filled:true,
     transport:{ mode:"✈️ 飛行機", modeColor:"#f472b6",
-      text:"羽田空港 ➔ タンソンニャット国際空港（ホーチミン）",
+      text:"羽田空港（HND）➔ タンソンニャット国際空港（SGN）",
       sub:"直行便でベトナムへ移動" }},
 
-  { place:"ホーチミン（ベトナム）", dates:"1月2日（土）〜1月5日（火）",
-    stay:"3泊4日", color:"#f59e0b", filled:true,
-    transport:{ mode:"✈️ 飛行機", modeColor:"#f472b6",
-      text:"ホーチミン ➔ バンコク（スワンナプーム/ドンムアン）",
-      sub:"1/5（火）昼〜夕方のフライトでタイへ移動" }},
+  { place:"滞在：ホーチミン（ベトナム）", dates:"1月2日（土）〜1月5日（火）",
+    stay:"3泊4日", color:"#f59e0b", filled:true, transport:null },
 
-  { place:"バンコク（クルンテープ・アピワット中央駅）", dates:"1月5日（火）夜発",
+  { place:"移動：ホーチミン ➔ バンコク", dates:"1月5日（火）",
+    stay:null, color:"#f472b6", filled:true,
+    transport:{ mode:"✈️ 飛行機", modeColor:"#f472b6",
+      text:"タンソンニャット国際空港（SGN）➔ バンコク（DMK/BKK）",
+      sub:"昼〜夕方の国際線フライトでタイへ移動（約1.5時間）" }},
+
+  { place:"移動：バンコク ➔ チェンマイ", dates:"1月5日（火）夜発 〜 1/6（水）朝着",
     stay:"1泊（車中泊）", color:"#f97316", filled:true,
     transport:{ mode:"🚂 夜行列車", modeColor:"#f97316",
-      text:"北部本線 特急・急行寝台列車 ➔ チェンマイ駅",
-      sub:"夕方〜夜発 ➔ 翌朝1/6（水）チェンマイ着（約11〜13時間）｜1・2等エアコン寝台推奨" }},
+      text:"クルンテープ・アピワット中央駅 ➔ チェンマイ駅",
+      sub:"北部本線 特急寝台列車（約11〜13時間）｜1・2等エアコン寝台推奨" }},
 
-  { place:"チェンマイ（タイ北部）", dates:"1月6日（水）〜1月10日（日）",
-    stay:"4泊5日", color:"#10b981", filled:true,
+  { place:"滞在：チェンマイ（タイ北部）", dates:"1月6日（水）〜1月10日（日）",
+    stay:"4泊5日", color:"#10b981", filled:true, transport:null },
+
+  { place:"移動：チェンマイ ➔ バンコク", dates:"1月10日（日）午前",
+    stay:null, color:"#f472b6", filled:true,
     transport:{ mode:"✈️ 飛行機", modeColor:"#f472b6",
       text:"チェンマイ空港（CNX）➔ バンコク（DMK/BKK）",
-      sub:"1/10（日）午前便でバンコクへ移動（約1.5時間）" }},
+      sub:"国内線フライトでバンコクへ折り返し（約1.5時間）" }},
 
-  { place:"バンコク（南バスターミナル等）", dates:"1月10日（日）夜発",
+  { place:"移動：バンコク ➔ クラビ", dates:"1月10日（日）夜発 〜 1/11（月）朝着",
     stay:"1泊（車中泊）", color:"#eab308", filled:true,
     transport:{ mode:"🚌 夜行バス", modeColor:"#eab308",
-      text:"長距離VIPバス ➔ クラビ・バスターミナル",
-      sub:"夕方〜夜発 ➔ 翌朝1/11（月）クラビ着（約12時間）" }},
+      text:"バンコク（南バスターミナル等）➔ クラビ・バスターミナル",
+      sub:"長距離VIPバス（約12時間）" }},
 
-  { place:"クラビ（Krabi）", dates:"1月11日（月）〜1月14日（木）",
-    stay:"3泊4日", color:"#3b82f6", filled:true,
+  { place:"滞在：クラビ（Krabi）", dates:"1月11日（月）〜1月14日（木）",
+    stay:"3泊4日", color:"#3b82f6", filled:true, transport:null },
+
+  { place:"移動：クラビ ➔ ランタ島", dates:"1月14日（木）",
+    stay:null, color:"#06b6d4", filled:true,
     transport:{ mode:"⛴️ 船・フェリー", modeColor:"#06b6d4",
       text:"クラビ（クラビタウン/アオナン）➔ ランタ島（Saladan Pier）",
       sub:"フェリーまたはスピードボート（約2〜2.5時間）" }},
 
-  { place:"ランタ島（Koh Lanta）", dates:"1月14日（木）〜1月17日（日）",
-    stay:"3泊4日", color:"#06b6d4", filled:true,
+  { place:"滞在：ランタ島（Koh Lanta）", dates:"1月14日（木）〜1月17日（日）",
+    stay:"3泊4日", color:"#06b6d4", filled:true, transport:null },
+
+  { place:"移動：ランタ島 ➔ ピピ島", dates:"1月17日（日）",
+    stay:null, color:"#06b6d4", filled:true,
     transport:{ mode:"⛴️ 船・フェリー", modeColor:"#06b6d4",
       text:"ランタ島（Saladan Pier）➔ ピピ島（Tonsai Pier）",
       sub:"高速船/スピードボート（約1〜1.5時間）" }},
 
-  { place:"ピピ島（Koh Phi Phi）", dates:"1月17日（日）〜1月20日（水）",
-    stay:"3泊4日", color:"#8b5cf6", filled:true,
+  { place:"滞在：ピピ島（Koh Phi Phi）", dates:"1月17日（日）〜1月20日（水）",
+    stay:"3泊4日", color:"#8b5cf6", filled:true, transport:null },
+
+  { place:"移動：ピピ島 ➔ プーケット", dates:"1月20日（水）",
+    stay:null, color:"#06b6d4", filled:true,
     transport:{ mode:"⛴️ 船・フェリー", modeColor:"#06b6d4",
       text:"ピピ島（Tonsai Pier）➔ プーケット（Rassada Pier）",
       sub:"大型フェリーまたはスピードボート（約1.5〜2時間）" }},
 
-  { place:"プーケット（Phuket）", dates:"1月20日（水）〜1月23日（土）",
-    stay:"3泊4日", color:"#d946ef", filled:true,
-    transport:{ mode:"✈️ 飛行機", modeColor:"#f472b6",
-      text:"プーケット国際空港（HKT）➔ ホーチミン（SGN）経由 ➔ 羽田空港",
-      sub:"1/23（土）プーケット発、ホーチミン乗り継ぎで日本帰国" }},
+  { place:"滞在：プーケット（Phuket）", dates:"1月20日（水）〜1月23日（土）",
+    stay:"3泊4日", color:"#d946ef", filled:true, transport:null },
 
-  { place:"羽田空港 到着", dates:"1月23日（土）〜24日（日）",
-    stay:null, color:"#e11d48", filled:true, transport:null }
+  { place:"移動：プーケット ➔ ホーチミン ➔ 羽田空港", dates:"1月23日（土）〜1月24日（日）",
+    stay:null, color:"#f472b6", filled:true,
+    transport:{ mode:"✈️ 飛行機", modeColor:"#f472b6",
+      text:"プーケット（HKT）➔ ホーチミン（SGN）経由 ➔ 羽田（HND）",
+      sub:"1/23（土）プーケット発 ➔ ホーチミン乗り継ぎ ➔ 1/24（日）日本帰国" }}
 ];
 
 
