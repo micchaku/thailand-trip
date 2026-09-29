@@ -2,452 +2,215 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ベトナム・タイ周遊ルートマップ（宿泊先管理・完全特化版）</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>東南アジア旅行 2027</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif; background: #0f172a; color: #e0e0e0; }
-#map { width: 100%; height: 48vh; min-height: 320px; }
-
-.panel { padding: 24px; max-width: 960px; margin: 0 auto; }
-.panel h1 { font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
-.panel .subtitle { font-size: 0.85rem; color: #94a3b8; margin-bottom: 24px; }
-
-/* Timeline Container */
-.timeline { position: relative; padding-left: 32px; }
-.timeline::before {
-  content: ''; position: absolute; left: 13px; top: 12px; bottom: 12px;
-  width: 2px; background: #334155;
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:#0f172a;color:#e2e8f0;overflow:hidden}
+#map{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1}
+#panel{position:fixed;top:0;right:0;width:370px;height:100%;background:rgba(15,23,42,.92);backdrop-filter:blur(12px);z-index:1000;overflow-y:auto;border-left:1px solid rgba(148,163,184,.15);transition:transform .3s}
+#panel.hide{transform:translateX(100%)}
+#toggle{position:fixed;top:12px;right:380px;z-index:1001;background:rgba(15,23,42,.85);border:1px solid rgba(148,163,184,.25);color:#e2e8f0;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:14px;backdrop-filter:blur(8px);transition:right .3s}
+#toggle.shifted{right:12px}
+.hdr{padding:20px 20px 10px;border-bottom:1px solid rgba(148,163,184,.12)}
+.hdr h1{font-size:18px;font-weight:700;color:#f8fafc;margin-bottom:2px}
+.hdr p{font-size:12px;color:#94a3b8}
+.tl{padding:12px 20px 20px}
+.ti{display:flex;gap:12px;position:relative;padding-bottom:6px}
+.ti:not(:last-child)::before{content:'';position:absolute;left:17px;top:38px;bottom:0;width:2px;background:rgba(148,163,184,.18)}
+.dot{width:36px;height:36px;min-width:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;margin-top:2px;position:relative;z-index:2}
+.dot.outline{background:transparent !important;border:2.5px solid}
+.info{flex:1;min-width:0}
+.info .nm{font-size:15px;font-weight:600;color:#f1f5f9}
+.info .dt{font-size:12px;color:#94a3b8;margin-top:1px}
+.info .st{font-size:12px;color:#cbd5e1;margin-top:1px}
+.tr{margin:6px 0 10px;padding:6px 10px;border-radius:6px;font-size:12px;display:flex;align-items:center;gap:6px}
+.tr .ic{font-size:15px}
+.legend{padding:16px 20px;border-top:1px solid rgba(148,163,184,.12)}
+.legend h3{font-size:13px;color:#94a3b8;margin-bottom:8px;font-weight:500}
+.lg{display:flex;flex-wrap:wrap;gap:8px}
+.lg span{display:flex;align-items:center;gap:5px;font-size:12px;color:#cbd5e1}
+.lg i{width:14px;height:4px;border-radius:2px;display:inline-block}
+.leaflet-popup-content-wrapper{background:rgba(15,23,42,.95)!important;color:#e2e8f0!important;border-radius:10px!important;border:1px solid rgba(148,163,184,.2)!important;box-shadow:0 8px 32px rgba(0,0,0,.5)!important}
+.leaflet-popup-tip{background:rgba(15,23,42,.95)!important}
+.leaflet-popup-content{margin:12px 16px!important;font-size:14px;line-height:1.5}
+.leaflet-popup-content strong{font-size:16px;color:#f8fafc}
+.leaflet-popup-content .sub{color:#94a3b8;font-size:12px;margin-top:4px}
+.leaflet-popup-content .det{margin-top:6px;font-size:13px;color:#cbd5e1}
+@media(max-width:600px){
+  #panel{width:100%;border-left:none}
+  #toggle{right:12px}
+  #toggle.shifted{right:12px}
+  .hdr h1{font-size:16px}
 }
-
-.tl-item { position: relative; margin-bottom: 16px; }
-.tl-item:last-child { margin-bottom: 0; }
-
-.tl-dot {
-  position: absolute; left: -32px; top: 14px;
-  width: 14px; height: 14px; border-radius: 50%;
-  border: 2px solid var(--c); background: #0f172a; z-index: 2;
-}
-
-/* 滞在（STAY / 宿特化）カードデザイン */
-.tl-item.type-stay .card {
-  background: rgba(30, 41, 59, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-left: 5px solid var(--c);
-  border-radius: 10px;
-  padding: 16px 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-/* 移動（MOVE）カードデザイン */
-.tl-item.type-move .card {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px dashed rgba(255, 255, 255, 0.15);
-  border-left: 4px solid var(--tc);
-  border-radius: 8px;
-  padding: 10px 14px;
-}
-
-/* Badge Header */
-.tl-badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;
-  margin-bottom: 8px;
-}
-.type-stay .tl-badge { background: rgba(255,255,255,0.1); color: #e2e8f0; }
-.type-move .tl-badge { background: var(--tc); color: #fff; }
-
-.tl-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
-.tl-title { font-weight: 700; font-size: 1.05rem; color: #fff; }
-.tl-dates { font-size: 0.82rem; color: #94a3b8; font-weight: 500; }
-.tl-stay-tag { font-size: 0.78rem; color: var(--c); font-weight: 700; background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 12px; }
-
-.tl-desc { font-size: 0.83rem; color: #cbd5e1; margin-top: 4px; line-height: 1.5; }
-.tl-sub { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
-
-/* 宿泊概要カード内部 */
-.hotel-card {
-  margin-top: 10px;
-  padding: 12px 14px;
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-}
-.hotel-card.booked {
-  border-color: rgba(16, 185, 129, 0.5);
-  background: rgba(16, 185, 129, 0.06);
-}
-.hotel-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  padding-bottom: 6px;
-}
-.hotel-name {
-  font-weight: 700;
-  font-size: 0.92rem;
-  color: #f8fafc;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.status-badge {
-  font-size: 0.68rem;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-weight: 700;
-}
-.status-booked { background: #10b981; color: #fff; }
-.status-pending { background: #475569; color: #cbd5e1; }
-
-.hotel-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 4px;
-  font-size: 0.8rem;
-}
-.hotel-row { display: flex; gap: 8px; line-height: 1.5; }
-.hotel-label { color: #64748b; min-width: 65px; font-weight: 600; }
-.hotel-val { color: #cbd5e1; word-break: break-all; }
-.hotel-link { color: #38bdf8; text-decoration: underline; font-weight: 500; }
-.hotel-link:hover { color: #7dd3fc; }
-
-/* Legend (移動手段の凡例枠) */
-.legend-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.08); }
-.leg { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: #cbd5e1; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
-.leg-badge { font-weight: 700; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; color: #fff; }
-
-/* Leaflet Overrides */
-.custom-popup .leaflet-popup-content-wrapper {
-  background: #1e293b; color: #e2e8f0; border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.08);
-}
-.custom-popup .leaflet-popup-tip { background: #1e293b; }
-.custom-popup .leaflet-popup-content { margin: 10px 14px; font-size: 13px; line-height: 1.6; }
-.custom-popup .leaflet-popup-content strong { color: #fff; }
 </style>
 </head>
 <body>
-
 <div id="map"></div>
-<div class="panel">
-  <h1>ベトナム・タイ周遊ルート［宿泊先概要管理版］</h1>
-  <p class="subtitle">1月2日〜1月23日（21泊22日）｜各滞在地における宿名・住所・手配状況</p>
-
-  <div class="timeline" id="timeline"></div>
-
-  <!-- 凡例 -->
-  <div class="legend-bar">
-    <div class="leg"><span class="leg-badge" style="background:#f472b6">✈️ 飛行機</span> 国際・国内線</div>
-    <div class="leg"><span class="leg-badge" style="background:#f97316">🚂 寝台列車</span> 夜行列車（車中泊）</div>
-    <div class="leg"><span class="leg-badge" style="background:#eab308">🚌 夜行バス</span> 長距離VIPバス</div>
-    <div class="leg"><span class="leg-badge" style="background:#06b6d4">⛴️ 高速船</span> フェリー・ボート</div>
+<button id="toggle" onclick="togglePanel()">📋</button>
+<div id="panel">
+  <div class="hdr">
+    <h1>🌏 東南アジア周遊 2027</h1>
+    <p>2027年1月2日〜1月24日着（21泊22日）</p>
+  </div>
+  <div class="tl" id="timeline"></div>
+  <div class="legend">
+    <h3>移動手段</h3>
+    <div class="lg">
+      <span><i style="background:#f472b6"></i>飛行機</span>
+      <span><i style="background:#f97316"></i>夜行列車</span>
+      <span><i style="background:#10b981"></i>長距離バス／バン</span>
+      <span><i style="background:#06b6d4"></i>フェリー／ボート</span>
+    </div>
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-
-// 地図用の地点データ
-const places = [
-  { id:"haneda", name:"羽田空港", en:"Haneda Airport", lat:35.5494, lng:139.7798, color:"#e11d48", type:"main" },
-  { id:"hcmc", name:"ホーチミン", en:"Ho Chi Minh City", lat:10.8231, lng:106.6297, color:"#f59e0b", stay:"3泊4日", popExtra:"手配済: Airbnb" },
-  { id:"bangkok", name:"バンコク", en:"Bangkok", lat:13.7563, lng:100.5018, color:"#f97316", stay:"中継", popExtra:"夜行移動ハブ" },
-  { id:"chiangmai", name:"チェンマイ", en:"Chiang Mai", lat:18.7883, lng:98.9853, color:"#10b981", stay:"4泊5日", popExtra:"宿未定" },
-  { id:"krabi", name:"クラビ", en:"Krabi", lat:8.0863, lng:98.9063, color:"#3b82f6", stay:"3泊4日", popExtra:"宿未定" },
-  { id:"lanta", name:"ランタ島", en:"Koh Lanta", lat:7.6292, lng:99.0389, color:"#06b6d4", stay:"3泊4日", popExtra:"宿未定" },
-  { id:"phiphi", name:"ピピ島", en:"Koh Phi Phi", lat:7.7407, lng:98.7784, color:"#8b5cf6", stay:"3泊4日", popExtra:"宿未定" },
-  { id:"phuket", name:"プーケット", en:"Phuket", lat:7.8804, lng:98.3923, color:"#d946ef", stay:"3泊4日", popExtra:"宿未定" }
+// === データ定義（スクリーンショットの旅程に完全準拠）===
+var places = [
+  {id:'haneda',   name:'羽田空港',     lat:35.5494, lng:139.7798, color:'#a78bfa', type:'airport',
+   dates:'1/2 出発 → 1/24 帰国', popExtra:'出発・帰国空港'},
+  {id:'hcmc',     name:'ホーチミン',   lat:10.8231, lng:106.6297, color:'#f472b6', type:'city',
+   dates:'1/2〜1/5（3泊）/ 1/23 乗継', popExtra:'ベンタイン市場・戦争証跡博物館・フォーやバインミー'},
+  {id:'bangkok',  name:'バンコク',     lat:13.7563, lng:100.5018, color:'#fbbf24', type:'city',
+   dates:'1/5 トランジット / 1/10 トランジット', popExtra:'乗継拠点（夜行列車・長距離バス）'},
+  {id:'chiangmai',name:'チェンマイ',   lat:18.7883, lng:98.9853,  color:'#fb923c', type:'city',
+   dates:'1/6〜1/10（4泊）', popExtra:'旧市街寺院巡り・ナイトバザール・象保護施設'},
+  {id:'krabi',    name:'クラビ',       lat:8.0863,  lng:98.9063,  color:'#34d399', type:'city',
+   dates:'1/11〜1/14（3泊）', popExtra:'アオナンビーチ・タイガーケーブ寺院・周辺観光'},
+  {id:'lanta',    name:'ランタ島',     lat:7.5407,  lng:99.0452,  color:'#2dd4bf', type:'island',
+   dates:'1/14〜1/17（3泊）', popExtra:'ロングビーチ・旧市街・シュノーケリング'},
+  {id:'phiphi',   name:'ピピ島',       lat:7.7407,  lng:98.7784,  color:'#22d3ee', type:'island',
+   dates:'1/17〜1/20（3泊）', popExtra:'トンサイベイ周辺・ロングビーチ周辺'},
+  {id:'phuket',   name:'プーケット',   lat:7.8804,  lng:98.3923,  color:'#60a5fa', type:'city',
+   dates:'1/20〜1/23（3泊）', popExtra:'パトンビーチまたはオールドタウン周辺'}
 ];
 
-// 地図のルート線データ
-const segments = [
-  { from:"haneda", to:"hcmc", color:"#f472b6", weight:2, dash:"6 8", curve:[[22.0, 125.0]] },
-  { from:"hcmc", to:"bangkok", color:"#f472b6", weight:2, dash:"6 8" },
-  { from:"bangkok", to:"chiangmai", color:"#f97316", weight:3, dash:null },
-  { from:"chiangmai", to:"bangkok", color:"#f472b6", weight:2, dash:"6 8" },
-  { from:"bangkok", to:"krabi", color:"#eab308", weight:3, dash:null },
-  { from:"krabi", to:"lanta", color:"#06b6d4", weight:2.5, dash:"8 6" },
-  { from:"lanta", to:"phiphi", color:"#06b6d4", weight:2.5, dash:"8 6" },
-  { from:"phiphi", to:"phuket", color:"#06b6d4", weight:2.5, dash:"8 6" },
-  { from:"phuket", to:"hcmc", color:"#f472b6", weight:2, dash:"6 8" },
-  { from:"hcmc", to:"haneda", color:"#f472b6", weight:2, dash:"6 8", curve:[[22.0, 125.0]] }
+var segments = [
+  {from:'haneda',  to:'hcmc',     color:'#f472b6', weight:2.5, dash:'8,6'},
+  {from:'hcmc',    to:'bangkok',  color:'#f472b6', weight:2.5, dash:'8,6'},
+  {from:'bangkok', to:'chiangmai',color:'#f97316', weight:3,   dash:null},
+  {from:'chiangmai',to:'bangkok', color:'#f472b6', weight:2.5, dash:'8,6'},
+  {from:'bangkok', to:'krabi',    color:'#10b981', weight:2.5, dash:null},
+  {from:'krabi',   to:'lanta',    color:'#06b6d4', weight:2.5, dash:'6,4'},
+  {from:'lanta',   to:'phiphi',   color:'#06b6d4', weight:2.5, dash:'6,4'},
+  {from:'phiphi',  to:'phuket',   color:'#06b6d4', weight:2.5, dash:'6,4'},
+  {from:'phuket',  to:'hcmc',     color:'#f472b6', weight:2.5, dash:'8,6'},
+  {from:'hcmc',    to:'haneda',   color:'#f472b6', weight:2.5, dash:'8,6'}
 ];
 
-// タイムラインデータ（観光情報を排除し、宿泊先の概要のみに特化）
-const timelineData = [
-  {
-    type: "move",
-    badge: "✈️ 移動", modeColor: "#f472b6",
-    title: "羽田空港 ➔ ホーチミン",
-    dates: "1月2日（土）",
-    desc: "羽田（HND）➔ タンソンニャット国際空港（SGN）",
-    sub: "直行便フライトでベトナムへ移動"
-  },
-  {
-    type: "stay",
-    color: "#f59e0b",
-    title: "ホーチミン（ベトナム）",
-    dates: "1月2日（土）〜 1月5日（火）",
-    stayTag: "3泊4日",
-    // 宿泊概要
-    hotel: {
-      isBooked: true,
-      name: "Airbnb (ホーチミンリスティング)",
-      address: "予約確定（詳細住所はAirbnb管理画面参照）",
-      checkinout: "1/2 IN / 1/5 OUT",
-      url: "https://www.airbnb.jp/rooms/20804337?source_impression_id=p3_1789962434_P3Dm3-ls1heiNC8A",
-      note: "手配完了"
-    }
-  },
-  {
-    type: "move",
-    badge: "✈️ 移動", modeColor: "#f472b6",
-    title: "ホーチミン ➔ バンコク",
-    dates: "1月5日（火）昼",
-    desc: "タンソンニャット国際空港（SGN）➔ バンコク（BKK/DMK）",
-    sub: "国際線フライトでタイへ移動（約1.5時間）"
-  },
-  {
-    type: "move",
-    badge: "🚂 夜行列車（移動・車中泊）", modeColor: "#f97316",
-    title: "バンコク ➔ チェンマイ",
-    dates: "1月5日（火）夜発 〜 1/6（水）朝着",
-    desc: "クルンテープ・アピワット中央駅 ➔ チェンマイ駅",
-    sub: "寝台特急列車（約11〜13時間）｜1等/2等エアコン寝台"
-  },
-  {
-    type: "stay",
-    color: "#10b981",
-    title: "チェンマイ（タイ北部）",
-    dates: "1月6日（水）〜 1月10日（日）",
-    stayTag: "4泊5日",
-    hotel: {
-      isBooked: false,
-      name: "未定（手配予定）",
-      address: "-",
-      checkinout: "1/6 IN / 1/10 OUT",
-      url: null,
-      note: "旧市街（Old City）またはニマンヘミン周辺推奨"
-    }
-  },
-  {
-    type: "move",
-    badge: "✈️ 移動", modeColor: "#f472b6",
-    title: "チェンマイ ➔ バンコク",
-    dates: "1月10日（日）午前",
-    desc: "チェンマイ空港（CNX）➔ バンコク（DMK/BKK）",
-    sub: "国内線フライトでバンコクへ折り返し（約1.5時間）"
-  },
-  {
-    type: "move",
-    badge: "🚌 夜行バス（移動・車中泊）", modeColor: "#eab308",
-    title: "バンコク ➔ クラビ",
-    dates: "1月10日（日）夜発 〜 1/11（月）朝着",
-    desc: "バンコク（南バスターミナル）➔ クラビ・バスターミナル",
-    sub: "長距離VIPバスでタイ南部へ南下（約12時間）"
-  },
-  {
-    type: "stay",
-    color: "#3b82f6",
-    title: "クラビ（Krabi）",
-    dates: "1月11日（月）〜 1月14日（木）",
-    stayTag: "3泊4日",
-    hotel: {
-      isBooked: false,
-      name: "未定（手配予定）",
-      address: "-",
-      checkinout: "1/11 IN / 1/14 OUT",
-      url: null,
-      note: "アオナンビーチ（Ao Nang）周辺推奨"
-    }
-  },
-  {
-    type: "move",
-    badge: "⛴️ 移動", modeColor: "#06b6d4",
-    title: "クラビ ➔ ランタ島",
-    dates: "1月14日（木）",
-    desc: "クラビ（アオナン/クラビタウン）➔ ランタ島（サラダン港）",
-    sub: "旅客フェリーまたはスピードボート（約2〜2.5時間）"
-  },
-  {
-    type: "stay",
-    color: "#06b6d4",
-    title: "ランタ島（Koh Lanta）",
-    dates: "1月14日（木）〜 1月17日（日）",
-    stayTag: "3泊4日",
-    hotel: {
-      isBooked: false,
-      name: "未定（手配予定）",
-      address: "-",
-      checkinout: "1/14 IN / 1/17 OUT",
-      url: null,
-      note: "ロングビーチ（Long Beach）またはクロンダオ周辺推奨"
-    }
-  },
-  {
-    type: "move",
-    badge: "⛴️ 移動", modeColor: "#06b6d4",
-    title: "ランタ島 ➔ ピピ島",
-    dates: "1月17日（日）",
-    desc: "ランタ島（サラダン港）➔ ピピ島（トンサイ港）",
-    sub: "高速船／スピードボート（約1〜1.5時間）"
-  },
-  {
-    type: "stay",
-    color: "#8b5cf6",
-    title: "ピピ島（Koh Phi Phi）",
-    dates: "1月17日（日）〜 1月20日（水）",
-    stayTag: "3泊4日",
-    hotel: {
-      isBooked: false,
-      name: "未定（手配予定）",
-      address: "-",
-      checkinout: "1/17 IN / 1/20 OUT",
-      url: null,
-      note: "トンサイベイ周辺またはロングビーチ推奨"
-    }
-  },
-  {
-    type: "move",
-    badge: "⛴️ 移動", modeColor: "#06b6d4",
-    title: "ピピ島 ➔ プーケット",
-    dates: "1月20日（水）",
-    desc: "ピピ島（トンサイ港）➔ プーケット（ラサダ港）",
-    sub: "大型旅客フェリー（約1.5〜2時間）"
-  },
-  {
-    type: "stay",
-    color: "#d946ef",
-    title: "プーケット（Phuket）",
-    dates: "1月20日（水）〜 1月23日（土）",
-    stayTag: "3泊4日",
-    hotel: {
-      isBooked: false,
-      name: "未定（手配予定）",
-      address: "-",
-      checkinout: "1/20 IN / 1/23 OUT",
-      url: null,
-      note: "パトンビーチまたはオールドタウン周辺推奨"
-    }
-  },
-  {
-    type: "move",
-    badge: "✈️ 移動（帰国）", modeColor: "#f472b6",
-    title: "プーケット ➔ ホーチミン ➔ 羽田空港",
-    dates: "1月23日（土）〜 1月24日（日）",
-    desc: "プーケット（HKT）➔ ホーチミン（SGN）経由 ➔ 羽田（HND）",
-    sub: "1/23（土）現地発 ➔ 1/24（日）日本帰国"
-  }
+var timeline = [
+  {place:'羽田空港',   dates:'1/2（土）',     stay:'',            color:'#a78bfa', filled:false,
+   transport:{text:'✈ 飛行機でホーチミンへ', bg:'rgba(244,114,182,.15)', fg:'#f472b6'}},
+  {place:'ホーチミン', dates:'1/2〜1/5',      stay:'3泊',         color:'#f472b6', filled:true,
+   transport:{text:'✈ 飛行機でバンコクへ', bg:'rgba(244,114,182,.15)', fg:'#f472b6'}},
+  {place:'バンコク',   dates:'1/5（火）',     stay:'トランジット', color:'#fbbf24', filled:false,
+   transport:{text:'🚂 夜行列車でチェンマイへ（約13時間）', bg:'rgba(249,115,22,.15)', fg:'#f97316'}},
+  {place:'チェンマイ', dates:'1/6〜1/10',     stay:'4泊',         color:'#fb923c', filled:true,
+   transport:{text:'✈ 飛行機でバンコクへ', bg:'rgba(244,114,182,.15)', fg:'#f472b6'}},
+  {place:'バンコク',   dates:'1/10（日）',    stay:'トランジット', color:'#fbbf24', filled:false,
+   transport:{text:'🚌 長距離バスでクラビへ（夜行）', bg:'rgba(16,185,129,.15)', fg:'#10b981'}},
+  {place:'クラビ',     dates:'1/11〜1/14',    stay:'3泊',         color:'#34d399', filled:true,
+   transport:{text:'⛴ フェリーでランタ島へ', bg:'rgba(6,182,212,.15)', fg:'#06b6d4'}},
+  {place:'ランタ島',   dates:'1/14〜1/17',    stay:'3泊',         color:'#2dd4bf', filled:true,
+   transport:{text:'⛴ スピードボートでピピ島へ', bg:'rgba(6,182,212,.15)', fg:'#06b6d4'}},
+  {place:'ピピ島',     dates:'1/17〜1/20',    stay:'3泊',         color:'#22d3ee', filled:true,
+   transport:{text:'⛴ 大型船でプーケットへ', bg:'rgba(6,182,212,.15)', fg:'#06b6d4'}},
+  {place:'プーケット', dates:'1/20〜1/23',    stay:'3泊',         color:'#60a5fa', filled:true,
+   transport:{text:'✈ 1/23 18:50発→ホーチミン乗継23:45発→羽田', bg:'rgba(244,114,182,.15)', fg:'#f472b6'}},
+  {place:'羽田空港',   dates:'1/24（日）06:50着', stay:'帰国',    color:'#a78bfa', filled:false, transport:null}
 ];
 
+// === 地図初期化 ===
+var map = L.map('map',{zoomControl:false}).setView([13.5,102],5);
+L.control.zoom({position:'bottomleft'}).addTo(map);
 
-// ===== LEAFLET MAP SETUP =====
-const map = L.map('map', { zoomControl: true, scrollWheelZoom: true });
-
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 18
+L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&hl=ja&x={x}&y={y}&z={z}',{
+  attribution:'Map data &copy; Google',
+  subdomains:'0123',
+  maxZoom:20
 }).addTo(map);
 
-const byId = id => places.find(p => p.id === id);
+// === マーカー配置 ===
+var placeMap = {};
+places.forEach(function(p){placeMap[p.id]=p;});
 
-// ルート線の描写
-segments.forEach(seg => {
-  const f = byId(seg.from), t = byId(seg.to);
-  const pts = [[f.lat, f.lng], ...(seg.curve || []), [t.lat, t.lng]];
-  L.polyline(pts, {
-    color: seg.color, weight: seg.weight, opacity: 0.75,
-    dashArray: seg.dash, smoothFactor: 1.5
+var icons = {airport:'✈️', city:'📍', island:'🏝️'};
+places.forEach(function(p,i){
+  var iconHtml = '<div style="width:38px;height:38px;border-radius:50%;'
+    +'background:'+p.color+';display:flex;align-items:center;justify-content:center;'
+    +'font-size:18px;box-shadow:0 2px 12px '+p.color+'66;border:2px solid rgba(255,255,255,.3)">'
+    +(icons[p.type]||'📍')+'</div>';
+  var mk = L.marker([p.lat,p.lng],{
+    icon:L.divIcon({className:'',html:iconHtml,iconSize:[38,38],iconAnchor:[19,19]})
+  }).addTo(map);
+
+  var popup = '<strong>'+p.name+'</strong>'
+    +'<div class="sub">'+p.dates+'</div>';
+  if(p.popExtra) popup+='<div class="det">'+p.popExtra+'</div>';
+  mk.bindPopup(popup);
+});
+
+// === ルート線 ===
+segments.forEach(function(s){
+  var a=placeMap[s.from], b=placeMap[s.to];
+  if(!a||!b) return;
+
+  var pts;
+  var dist = Math.sqrt(Math.pow(a.lat-b.lat,2)+Math.pow(a.lng-b.lng,2));
+  if(dist>8){
+    var midLat=(a.lat+b.lat)/2, midLng=(a.lng+b.lng)/2;
+    var dx=b.lng-a.lng, dy=b.lat-a.lat;
+    midLat+=Math.abs(dx)*0.08; midLng-=dy*0.08;
+    pts=[];
+    for(var t=0;t<=1;t+=0.05){
+      var lt=(1-t)*(1-t)*a.lat+2*(1-t)*t*midLat+t*t*b.lat;
+      var ln=(1-t)*(1-t)*a.lng+2*(1-t)*t*midLng+t*t*b.lng;
+      pts.push([lt,ln]);
+    }
+  } else {
+    pts=[[a.lat,a.lng],[b.lat,b.lng]];
+  }
+
+  L.polyline(pts,{
+    color:s.color, weight:s.weight, opacity:0.7,
+    dashArray:s.dash||null
   }).addTo(map);
 });
 
-// マップ表示位置自動調整
-const seaPoints = places.filter(p => p.id !== 'haneda').map(p => [p.lat, p.lng]);
-map.fitBounds(seaPoints, { padding: [40, 40] });
-
-// マーカー作成
-let mainIdx = 1;
-places.forEach(p => {
-  const isHaneda = p.id === 'haneda';
-  const label = p.type === 'transit' ? '🔄' : (isHaneda ? '✈️' : mainIdx++);
-  const icon = L.divIcon({ className: '', iconSize: [34, 34], iconAnchor: [17, 17], popupAnchor: [0, -20],
-    html: `<div style="width:34px;height:34px;border-radius:50%;background:${p.color};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;box-shadow:0 2px 10px ${p.color}66;border:2.5px solid rgba(255,255,255,0.35);">${label}</div>` });
-
-  let popupHtml = `<strong>${p.name}（${p.en}）</strong>`;
-  if (p.stay) popupHtml += ` <span style="color:${p.color};font-weight:700">［${p.stay}］</span>`;
-  if (p.popExtra) popupHtml += `<br><span style="color:#94a3b8;font-size:12px">${p.popExtra}</span>`;
-
-  L.marker([p.lat, p.lng], { icon: icon }).addTo(map).bindPopup(popupHtml, { className: 'custom-popup' });
-});
-
-
-// ===== RENDER TIMELINE =====
-const tlEl = document.getElementById('timeline');
-
-timelineData.forEach(item => {
-  const el = document.createElement('div');
-  const isStay = item.type === 'stay';
-  el.className = `tl-item ${isStay ? 'type-stay' : 'type-move'}`;
-  
-  const dotColor = isStay ? item.color : item.modeColor;
-  el.style.setProperty('--c', dotColor);
-  el.style.setProperty('--tc', item.modeColor || dotColor);
-
-  let html = `<div class="tl-dot" style="--c:${dotColor}"></div>`;
-  html += `<div class="card">`;
-  
-  if (isStay) {
-    html += `<div class="tl-badge">🏨 宿泊エリア</div>`;
-    html += `<div class="tl-header">`;
-    html += `<span class="tl-title">${item.title}</span>`;
-    html += `<span class="tl-stay-tag">${item.stayTag}</span>`;
-    html += `</div>`;
-    html += `<div class="tl-dates">${item.dates}</div>`;
-
-    // 宿泊概要カード（宿名・住所・チェックインアウト・予約情報）
-    if (item.hotel) {
-      const h = item.hotel;
-      const statusBadge = h.isBooked 
-        ? `<span class="status-badge status-booked">手配済み</span>` 
-        : `<span class="status-badge status-pending">未手配</span>`;
-      
-      html += `<div class="hotel-card ${h.isBooked ? 'booked' : ''}">`;
-      html += `<div class="hotel-card-header">`;
-      html += `<div class="hotel-name">🏠 ${h.name}</div>`;
-      html += `${statusBadge}`;
-      html += `</div>`;
-      
-      html += `<div class="hotel-grid">`;
-      html += `<div class="hotel-row"><span class="hotel-label">日程</span><span class="hotel-val">${h.checkinout}</span></div>`;
-      html += `<div class="hotel-row"><span class="hotel-label">住所</span><span class="hotel-val">${h.address}</span></div>`;
-      
-      if (h.url) {
-        html += `<div class="hotel-row"><span class="hotel-label">予約URL</span><span class="hotel-val"><a class="hotel-link" href="${h.url}" target="_blank" rel="noopener">予約ページを表示 ↗</a></span></div>`;
-      }
-      if (h.note) {
-        html += `<div class="hotel-row"><span class="hotel-label">メモ</span><span class="hotel-val" style="color:#94a3b8">${h.note}</span></div>`;
-      }
-      html += `</div>`;
-      html += `</div>`;
-    }
-
-  } else {
-    html += `<div class="tl-badge">${item.badge}</div>`;
-    html += `<div class="tl-header">`;
-    html += `<span class="tl-title">${item.title}</span>`;
-    html += `<span class="tl-dates">${item.dates}</span>`;
-    html += `</div>`;
-    html += `<div class="tl-desc" style="color:#e2e8f0;font-weight:600">${item.desc}</div>`;
-    if (item.sub) html += `<div class="tl-sub">${item.sub}</div>`;
+// === タイムライン生成 ===
+var tlEl = document.getElementById('timeline');
+timeline.forEach(function(t,i){
+  var html='<div class="ti">';
+  var dotStyle = t.filled
+    ? 'background:'+t.color
+    : 'border-color:'+t.color;
+  html+='<div class="dot '+(t.filled?'':'outline')+'" style="'+dotStyle+'">'
+    +(i+1)+'</div>';
+  html+='<div class="info">';
+  html+='<div class="nm">'+t.place+'</div>';
+  html+='<div class="dt">'+t.dates+(t.stay?' ／ '+t.stay:'')+'</div>';
+  if(t.transport){
+    html+='<div class="tr" style="background:'+t.transport.bg+';color:'+t.transport.fg+'">';
+    html+=t.transport.text+'</div>';
   }
-
-  html += `</div>`;
-  el.innerHTML = html;
-  tlEl.appendChild(el);
+  html+='</div></div>';
+  tlEl.innerHTML+=html;
 });
 
+// === パネル開閉 ===
+function togglePanel(){
+  var p=document.getElementById('panel');
+  var b=document.getElementById('toggle');
+  p.classList.toggle('hide');
+  b.classList.toggle('shifted');
+}
+
+// === 地図範囲をルート全体にフィット ===
+var bounds = L.latLngBounds(places.map(function(p){return[p.lat,p.lng];}));
+map.fitBounds(bounds,{padding:[40,40]});
 </script>
 </body>
 </html>
