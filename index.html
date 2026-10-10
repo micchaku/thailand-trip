@@ -688,10 +688,12 @@ svg.leaflet-image-layer.leaflet-interactive path {
   --mono: 'JetBrains Mono', 'SF Mono', monospace;
   color-scheme: dark;
 }
-body { font-family: var(--font); background: var(--bg); color: var(--fg); }
-#map { width: 100%; height: 46vh; min-height: 300px; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: var(--font); background: var(--bg); color: var(--fg); display: flex; flex-direction: column; }
+#map { width: 100%; height: 42vh; min-height: 260px; flex-shrink: 0; }
 #map .leaflet-tile-pane { filter: brightness(0.75) contrast(1.1); }
 
+.panel-wrap { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .panel { padding: 24px 20px 48px; max-width: 860px; margin: 0 auto; }
 
 /* Header */
@@ -833,6 +835,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg); }
 </style>
 
 <div id="map"></div>
+<div class="panel-wrap">
 <div class="panel">
   <div class="page-header">
     <div class="page-title">ベトナム・タイ 周遊ルート</div>
@@ -851,12 +854,12 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg); }
   <div class="legend-row">
     <div class="leg-chip"><span class="leg-dot" style="background:var(--flight)"></span>飛行機</div>
     <div class="leg-chip"><span class="leg-dot" style="background:var(--train)"></span>寝台列車</div>
-    <div class="leg-chip"><span class="leg-dot" style="background:var(--bus)"></span>夜行バス</div>
     <div class="leg-chip"><span class="leg-dot" style="background:var(--ferry)"></span>高速船</div>
   </div>
 
   <div class="timeline" id="timeline"></div>
 </div>
+</div><!-- /panel-wrap -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
@@ -875,8 +878,7 @@ const segments = [
   { from:"haneda", to:"hcmc", color:"#e879a0", w:2, dash:"6 8", via:[[22,125]] },
   { from:"hcmc", to:"bangkok", color:"#e879a0", w:2, dash:"6 8" },
   { from:"bangkok", to:"chiangmai", color:"#f59e42", w:3 },
-  { from:"chiangmai", to:"bangkok", color:"#e879a0", w:2, dash:"6 8" },
-  { from:"bangkok", to:"krabi", color:"#eab308", w:3 },
+  { from:"chiangmai", to:"krabi", color:"#e879a0", w:2, dash:"6 8" },
   { from:"krabi", to:"lanta", color:"#22b8cf", w:2.5, dash:"8 6" },
   { from:"lanta", to:"phiphi", color:"#22b8cf", w:2.5, dash:"8 6" },
   { from:"phiphi", to:"phuket", color:"#22b8cf", w:2.5, dash:"8 6" },
@@ -885,10 +887,12 @@ const segments = [
 ];
 
 const timeline = [
-  { type:"move", mc:"#e879a0", badge:"✈ Flight", title:"羽田空港 → ホーチミン", dates:"1/2（土）", desc:"羽田（HND）→ タンソンニャット（SGN）", sub:"直行便" },
+  { type:"move", mc:"#e879a0", badge:"✈ Flight", title:"羽田空港 → ホーチミン", dates:"1/2（土）", desc:"羽田（HND）→ タンソンニャット（SGN）", sub:"直行便",
+    flight:{ flightNo:"JAL079", airline:"日本航空（JAL）", dep:"01:25", depAirport:"羽田空港（HND）", arr:"05:55", arrAirport:"タンソンニャット空港（SGN）", duration:"約6h30m" }},
   { type:"stay", c:"#f59e0b", mapId:"hcmc", title:"ホーチミン", dates:"1/2（土）— 1/5（火）", tag:"3泊4日",
     hotel:{ booked:true, name:"Airbnb（ホーチミン）", addr:"予約確定 — Airbnb管理画面参照", io:"1/2 IN → 1/5 OUT", url:"https://www.airbnb.jp/rooms/20804337?source_impression_id=p3_1789962434_P3Dm3-ls1heiNC8A", note:"手配完了" }},
-  { type:"move", mc:"#e879a0", badge:"✈ Flight", title:"ホーチミン → バンコク", dates:"1/5（火）昼", desc:"SGN → BKK/DMK", sub:"国際線（約1.5h）", mapId:"bangkok" },
+  { type:"move", mc:"#e879a0", badge:"✈ Flight", title:"ホーチミン → バンコク", dates:"1/5（火）昼", desc:"SGN → ドンムアン空港（DMK）", sub:"国際線（約1h35m）", mapId:"bangkok",
+    flight:{ flightNo:"VN605", airline:"ベトナム航空", dep:"11:35", depAirport:"タンソンニャット空港（SGN）", arr:"13:10", arrAirport:"ドンムアン空港（DMK）", duration:"約1h35m" }},
   { type:"move", mc:"#f59e42", badge:"🚂 寝台列車", title:"バンコク → チェンマイ", dates:"1/5（火）18:40発 — 1/6 07:15着", desc:"クルンテープ・アピワット中央駅 → チェンマイ駅", sub:"Special Express CNR（列車No.9）", mapId:"chiangmai",
     ticket:{ booked:true, trainNo:"9", route:"Krung Thep Aphiwat → Chiang Mai", dep:"18:40", arr:"07:15",
       pax:[
@@ -897,8 +901,8 @@ const timeline = [
       ]}},
   { type:"stay", c:"#10b981", mapId:"chiangmai", title:"チェンマイ", dates:"1/6（水）— 1/10（日）", tag:"4泊5日",
     hotel:{ booked:false, name:"未定", addr:"-", io:"1/6 IN → 1/10 OUT", note:"旧市街 or ニマンヘミン推奨" }},
-  { type:"move", mc:"#e879a0", badge:"✈ Flight", title:"チェンマイ → バンコク", dates:"1/10（日）午前", desc:"CNX → DMK/BKK", sub:"国内線（約1.5h）", mapId:"bangkok" },
-  { type:"move", mc:"#eab308", badge:"🚌 夜行バス", title:"バンコク → クラビ", dates:"1/10（日）夜発 — 1/11 朝着", desc:"南バスターミナル → クラビBT", sub:"VIPバス（約12h）", mapId:"krabi" },
+  { type:"move", mc:"#e879a0", badge:"✈ Flight", title:"チェンマイ → クラビ", dates:"1/10（日）", desc:"CNX → クラビ空港（KBV）", sub:"タイ・エアアジア（約2h）", mapId:"krabi",
+    flight:{ flightNo:"FD3076", airline:"タイ・エアアジア", dep:"12:55", depAirport:"チェンマイ空港（CNX）", arr:"14:55", arrAirport:"クラビ空港（KBV）", duration:"約2h" }},
   { type:"stay", c:"#3b82f6", mapId:"krabi", title:"クラビ", dates:"1/11（月）— 1/14（木）", tag:"3泊4日",
     hotel:{ booked:false, name:"未定", addr:"-", io:"1/11 IN → 1/14 OUT", note:"アオナンビーチ周辺推奨" }},
   { type:"move", mc:"#22b8cf", badge:"⛴ Ferry", title:"クラビ → ランタ島", dates:"1/14（木）", desc:"アオナン → サラダン港", sub:"フェリー（約2h）", mapId:"lanta" },
@@ -910,7 +914,11 @@ const timeline = [
   { type:"move", mc:"#22b8cf", badge:"⛴ Ferry", title:"ピピ島 → プーケット", dates:"1/20（水）", desc:"トンサイ港 → ラサダ港", sub:"フェリー（約1.5h）", mapId:"phuket" },
   { type:"stay", c:"#d946ef", mapId:"phuket", title:"プーケット", dates:"1/20（水）— 1/23（土）", tag:"3泊4日",
     hotel:{ booked:false, name:"未定", addr:"-", io:"1/20 IN → 1/23 OUT", note:"パトンビーチ or オールドタウン推奨" }},
-  { type:"move", mc:"#e879a0", badge:"✈ 帰国便", title:"プーケット → ホーチミン → 羽田", dates:"1/23（土）— 1/24（日）", desc:"HKT → SGN経由 → HND", sub:"1/24 日本帰国", mapId:"haneda" }
+  { type:"move", mc:"#e879a0", badge:"✈ 帰国便", title:"プーケット → ホーチミン → 羽田", dates:"1/23（土）— 1/24（日）", desc:"HKT → SGN経由 → HND", sub:"1/24 日本帰国", mapId:"haneda",
+    flights:[
+      { flightNo:"VN620", airline:"ベトナム航空", dep:"18:50", depAirport:"プーケット空港（HKT）", arr:"20:55", arrAirport:"タンソンニャット空港（SGN）", duration:"約2h05m", date:"1/23" },
+      { flightNo:"JAL070", airline:"日本航空（JAL）", dep:"23:45", depAirport:"タンソンニャット空港（SGN）", arr:"06:55(+1)", arrAirport:"羽田空港（HND）", duration:"約5h10m", date:"1/23-24" }
+    ]}
 ];
 
 // ===== MAP =====
@@ -1015,6 +1023,36 @@ timeline.forEach(item => {
       });
       h += `</div></div>`;
     }
+
+    // Single flight detail
+    if (item.flight) {
+      const fl = item.flight;
+      h += `<div class="detail-box is-booked">`;
+      h += `<div class="detail-header"><div class="detail-name">✈️ フライト情報</div>`;
+      h += `<span class="status-pill pill-booked">予約済</span></div>`;
+      h += `<div class="detail-grid">`;
+      h += `<div class="detail-row"><span class="detail-label">便名</span><span class="detail-val">${fl.flightNo}（${fl.airline}）</span></div>`;
+      h += `<div class="detail-row"><span class="detail-label">出発</span><span class="detail-val">${fl.dep}　${fl.depAirport}</span></div>`;
+      h += `<div class="detail-row"><span class="detail-label">到着</span><span class="detail-val">${fl.arr}　${fl.arrAirport}</span></div>`;
+      h += `<div class="detail-row"><span class="detail-label">所要</span><span class="detail-val">${fl.duration}</span></div>`;
+      h += `</div></div>`;
+    }
+
+    // Multi-leg flight (return trip etc.)
+    if (item.flights) {
+      item.flights.forEach((fl, i) => {
+        h += `<div class="detail-box is-booked" style="${i > 0 ? 'margin-top:8px' : ''}">`;
+        h += `<div class="detail-header"><div class="detail-name">✈️ ${i === 0 ? '第1便' : '第2便（乗継）'}</div>`;
+        h += `<span class="status-pill pill-booked">予約済</span></div>`;
+        h += `<div class="detail-grid">`;
+        h += `<div class="detail-row"><span class="detail-label">便名</span><span class="detail-val">${fl.flightNo}（${fl.airline}）</span></div>`;
+        h += `<div class="detail-row"><span class="detail-label">出発</span><span class="detail-val">${fl.dep}　${fl.depAirport}</span></div>`;
+        h += `<div class="detail-row"><span class="detail-label">到着</span><span class="detail-val">${fl.arr}　${fl.arrAirport}</span></div>`;
+        h += `<div class="detail-row"><span class="detail-label">所要</span><span class="detail-val">${fl.duration}</span></div>`;
+        h += `</div></div>`;
+      });
+    }
+
     h += `</div>`;
   }
 
