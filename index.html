@@ -1,215 +1,1026 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>東南アジア旅行 2027</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Vietnam-Thailand Route</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" />
+<style>/* Leaflet 1.9.4 */
+/* required styles */
+
+.leaflet-pane,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container,
+.leaflet-pane > svg,
+.leaflet-pane > canvas,
+.leaflet-zoom-box,
+.leaflet-image-layer,
+.leaflet-layer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	}
+.leaflet-container {
+	overflow: hidden;
+	}
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	        user-select: none;
+	  -webkit-user-drag: none;
+	}
+/* Prevents IE11 from highlighting tiles in blue */
+.leaflet-tile::selection {
+	background: transparent;
+}
+/* Safari renders non-retina tile on retina better with this, but Chrome is worse */
+.leaflet-safari .leaflet-tile {
+	image-rendering: -webkit-optimize-contrast;
+	}
+/* hack that prevents hw layers "stretching" when loading new tiles */
+.leaflet-safari .leaflet-tile-container {
+	width: 1600px;
+	height: 1600px;
+	-webkit-transform-origin: 0 0;
+	}
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	display: block;
+	}
+/* .leaflet-container svg: reset svg max-width decleration shipped in Joomla! (joomla.org) 3.x */
+/* .leaflet-container img: map is broken in FF if you have max-width: 100% on tiles */
+.leaflet-container .leaflet-overlay-pane svg {
+	max-width: none !important;
+	max-height: none !important;
+	}
+.leaflet-container .leaflet-marker-pane img,
+.leaflet-container .leaflet-shadow-pane img,
+.leaflet-container .leaflet-tile-pane img,
+.leaflet-container img.leaflet-image-layer,
+.leaflet-container .leaflet-tile {
+	max-width: none !important;
+	max-height: none !important;
+	width: auto;
+	padding: 0;
+	}
+
+.leaflet-container img.leaflet-tile {
+	/* See: https://bugs.chromium.org/p/chromium/issues/detail?id=600120 */
+	mix-blend-mode: plus-lighter;
+}
+
+.leaflet-container.leaflet-touch-zoom {
+	-ms-touch-action: pan-x pan-y;
+	touch-action: pan-x pan-y;
+	}
+.leaflet-container.leaflet-touch-drag {
+	-ms-touch-action: pinch-zoom;
+	/* Fallback for FF which doesn't support pinch-zoom */
+	touch-action: none;
+	touch-action: pinch-zoom;
+}
+.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
+	-ms-touch-action: none;
+	touch-action: none;
+}
+.leaflet-container {
+	-webkit-tap-highlight-color: transparent;
+}
+.leaflet-container a {
+	-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
+}
+.leaflet-tile {
+	filter: inherit;
+	visibility: hidden;
+	}
+.leaflet-tile-loaded {
+	visibility: inherit;
+	}
+.leaflet-zoom-box {
+	width: 0;
+	height: 0;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	z-index: 800;
+	}
+/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */
+.leaflet-overlay-pane svg {
+	-moz-user-select: none;
+	}
+
+.leaflet-pane         { z-index: 400; }
+
+.leaflet-tile-pane    { z-index: 200; }
+.leaflet-overlay-pane { z-index: 400; }
+.leaflet-shadow-pane  { z-index: 500; }
+.leaflet-marker-pane  { z-index: 600; }
+.leaflet-tooltip-pane   { z-index: 650; }
+.leaflet-popup-pane   { z-index: 700; }
+
+.leaflet-map-pane canvas { z-index: 100; }
+.leaflet-map-pane svg    { z-index: 200; }
+
+.leaflet-vml-shape {
+	width: 1px;
+	height: 1px;
+	}
+.lvml {
+	behavior: url(#default#VML);
+	display: inline-block;
+	position: absolute;
+	}
+
+
+/* control positioning */
+
+.leaflet-control {
+	position: relative;
+	z-index: 800;
+	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
+	pointer-events: auto;
+	}
+.leaflet-top,
+.leaflet-bottom {
+	position: absolute;
+	z-index: 1000;
+	pointer-events: none;
+	}
+.leaflet-top {
+	top: 0;
+	}
+.leaflet-right {
+	right: 0;
+	}
+.leaflet-bottom {
+	bottom: 0;
+	}
+.leaflet-left {
+	left: 0;
+	}
+.leaflet-control {
+	float: left;
+	clear: both;
+	}
+.leaflet-right .leaflet-control {
+	float: right;
+	}
+.leaflet-top .leaflet-control {
+	margin-top: 10px;
+	}
+.leaflet-bottom .leaflet-control {
+	margin-bottom: 10px;
+	}
+.leaflet-left .leaflet-control {
+	margin-left: 10px;
+	}
+.leaflet-right .leaflet-control {
+	margin-right: 10px;
+	}
+
+
+/* zoom and fade animations */
+
+.leaflet-fade-anim .leaflet-popup {
+	opacity: 0;
+	-webkit-transition: opacity 0.2s linear;
+	   -moz-transition: opacity 0.2s linear;
+	        transition: opacity 0.2s linear;
+	}
+.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
+	opacity: 1;
+	}
+.leaflet-zoom-animated {
+	-webkit-transform-origin: 0 0;
+	    -ms-transform-origin: 0 0;
+	        transform-origin: 0 0;
+	}
+svg.leaflet-zoom-animated {
+	will-change: transform;
+}
+
+.leaflet-zoom-anim .leaflet-zoom-animated {
+	-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);
+	   -moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);
+	        transition:         transform 0.25s cubic-bezier(0,0,0.25,1);
+	}
+.leaflet-zoom-anim .leaflet-tile,
+.leaflet-pan-anim .leaflet-tile {
+	-webkit-transition: none;
+	   -moz-transition: none;
+	        transition: none;
+	}
+
+.leaflet-zoom-anim .leaflet-zoom-hide {
+	visibility: hidden;
+	}
+
+
+/* cursors */
+
+.leaflet-interactive {
+	cursor: pointer;
+	}
+.leaflet-grab {
+	cursor: -webkit-grab;
+	cursor:    -moz-grab;
+	cursor:         grab;
+	}
+.leaflet-crosshair,
+.leaflet-crosshair .leaflet-interactive {
+	cursor: crosshair;
+	}
+.leaflet-popup-pane,
+.leaflet-control {
+	cursor: auto;
+	}
+.leaflet-dragging .leaflet-grab,
+.leaflet-dragging .leaflet-grab .leaflet-interactive,
+.leaflet-dragging .leaflet-marker-draggable {
+	cursor: move;
+	cursor: -webkit-grabbing;
+	cursor:    -moz-grabbing;
+	cursor:         grabbing;
+	}
+
+/* marker & overlays interactivity */
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-image-layer,
+.leaflet-pane > svg path,
+.leaflet-tile-container {
+	pointer-events: none;
+	}
+
+.leaflet-marker-icon.leaflet-interactive,
+.leaflet-image-layer.leaflet-interactive,
+.leaflet-pane > svg path.leaflet-interactive,
+svg.leaflet-image-layer.leaflet-interactive path {
+	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
+	pointer-events: auto;
+	}
+
+/* visual tweaks */
+
+.leaflet-container {
+	background: #ddd;
+	outline-offset: 1px;
+	}
+.leaflet-container a {
+	color: #0078A8;
+	}
+.leaflet-zoom-box {
+	border: 2px dotted #38f;
+	background: rgba(255,255,255,0.5);
+	}
+
+
+/* general typography */
+.leaflet-container {
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-size: 0.75rem;
+	line-height: 1.5;
+	}
+
+
+/* general toolbar styles */
+
+.leaflet-bar {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+	border-radius: 4px;
+	}
+.leaflet-bar a {
+	background-color: #fff;
+	border-bottom: 1px solid #ccc;
+	width: 26px;
+	height: 26px;
+	line-height: 26px;
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+	}
+.leaflet-bar a,
+.leaflet-control-layers-toggle {
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	display: block;
+	}
+.leaflet-bar a:hover,
+.leaflet-bar a:focus {
+	background-color: #f4f4f4;
+	}
+.leaflet-bar a:first-child {
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	}
+.leaflet-bar a:last-child {
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom: none;
+	}
+.leaflet-bar a.leaflet-disabled {
+	cursor: default;
+	background-color: #f4f4f4;
+	color: #bbb;
+	}
+
+.leaflet-touch .leaflet-bar a {
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	}
+.leaflet-touch .leaflet-bar a:first-child {
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+	}
+.leaflet-touch .leaflet-bar a:last-child {
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	}
+
+/* zoom control */
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+	font: bold 18px 'Lucida Console', Monaco, monospace;
+	text-indent: 1px;
+	}
+
+.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {
+	font-size: 22px;
+	}
+
+
+/* layers control */
+
+.leaflet-control-layers {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	background: #fff;
+	border-radius: 5px;
+	}
+.leaflet-control-layers-toggle {
+	background-image: url(images/layers.png);
+	width: 36px;
+	height: 36px;
+	}
+.leaflet-retina .leaflet-control-layers-toggle {
+	background-image: url(images/layers-2x.png);
+	background-size: 26px 26px;
+	}
+.leaflet-touch .leaflet-control-layers-toggle {
+	width: 44px;
+	height: 44px;
+	}
+.leaflet-control-layers .leaflet-control-layers-list,
+.leaflet-control-layers-expanded .leaflet-control-layers-toggle {
+	display: none;
+	}
+.leaflet-control-layers-expanded .leaflet-control-layers-list {
+	display: block;
+	position: relative;
+	}
+.leaflet-control-layers-expanded {
+	padding: 6px 10px 6px 6px;
+	color: #333;
+	background: #fff;
+	}
+.leaflet-control-layers-scrollbar {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	padding-right: 5px;
+	}
+.leaflet-control-layers-selector {
+	margin-top: 2px;
+	position: relative;
+	top: 1px;
+	}
+.leaflet-control-layers label {
+	display: block;
+	font-size: 13px;
+	font-size: 1.08333em;
+	}
+.leaflet-control-layers-separator {
+	height: 0;
+	border-top: 1px solid #ddd;
+	margin: 5px -10px 5px -6px;
+	}
+
+/* Default icon URLs */
+.leaflet-default-icon-path { /* used only in path-guessing heuristic, see L.Icon.Default */
+	background-image: url(images/marker-icon.png);
+	}
+
+
+/* attribution and scale controls */
+
+.leaflet-container .leaflet-control-attribution {
+	background: #fff;
+	background: rgba(255, 255, 255, 0.8);
+	margin: 0;
+	}
+.leaflet-control-attribution,
+.leaflet-control-scale-line {
+	padding: 0 5px;
+	color: #333;
+	line-height: 1.4;
+	}
+.leaflet-control-attribution a {
+	text-decoration: none;
+	}
+.leaflet-control-attribution a:hover,
+.leaflet-control-attribution a:focus {
+	text-decoration: underline;
+	}
+.leaflet-attribution-flag {
+	display: inline !important;
+	vertical-align: baseline !important;
+	width: 1em;
+	height: 0.6669em;
+	}
+.leaflet-left .leaflet-control-scale {
+	margin-left: 5px;
+	}
+.leaflet-bottom .leaflet-control-scale {
+	margin-bottom: 5px;
+	}
+.leaflet-control-scale-line {
+	border: 2px solid #777;
+	border-top: none;
+	line-height: 1.1;
+	padding: 2px 5px 1px;
+	white-space: nowrap;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	background: rgba(255, 255, 255, 0.8);
+	text-shadow: 1px 1px #fff;
+	}
+.leaflet-control-scale-line:not(:first-child) {
+	border-top: 2px solid #777;
+	border-bottom: none;
+	margin-top: -2px;
+	}
+.leaflet-control-scale-line:not(:first-child):not(:last-child) {
+	border-bottom: 2px solid #777;
+	}
+
+.leaflet-touch .leaflet-control-attribution,
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	box-shadow: none;
+	}
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	border: 2px solid rgba(0,0,0,0.2);
+	background-clip: padding-box;
+	}
+
+
+/* popup */
+
+.leaflet-popup {
+	position: absolute;
+	text-align: center;
+	margin-bottom: 20px;
+	}
+.leaflet-popup-content-wrapper {
+	padding: 1px;
+	text-align: left;
+	border-radius: 12px;
+	}
+.leaflet-popup-content {
+	margin: 13px 24px 13px 20px;
+	line-height: 1.3;
+	font-size: 13px;
+	font-size: 1.08333em;
+	min-height: 1px;
+	}
+.leaflet-popup-content p {
+	margin: 17px 0;
+	margin: 1.3em 0;
+	}
+.leaflet-popup-tip-container {
+	width: 40px;
+	height: 20px;
+	position: absolute;
+	left: 50%;
+	margin-top: -1px;
+	margin-left: -20px;
+	overflow: hidden;
+	pointer-events: none;
+	}
+.leaflet-popup-tip {
+	width: 17px;
+	height: 17px;
+	padding: 1px;
+
+	margin: -10px auto 0;
+	pointer-events: auto;
+
+	-webkit-transform: rotate(45deg);
+	   -moz-transform: rotate(45deg);
+	    -ms-transform: rotate(45deg);
+	        transform: rotate(45deg);
+	}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+	background: white;
+	color: #333;
+	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+	}
+.leaflet-container a.leaflet-popup-close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: none;
+	text-align: center;
+	width: 24px;
+	height: 24px;
+	font: 16px/24px Tahoma, Verdana, sans-serif;
+	color: #757575;
+	text-decoration: none;
+	background: transparent;
+	}
+.leaflet-container a.leaflet-popup-close-button:hover,
+.leaflet-container a.leaflet-popup-close-button:focus {
+	color: #585858;
+	}
+.leaflet-popup-scrolled {
+	overflow: auto;
+	}
+
+.leaflet-oldie .leaflet-popup-content-wrapper {
+	-ms-zoom: 1;
+	}
+.leaflet-oldie .leaflet-popup-tip {
+	width: 24px;
+	margin: 0 auto;
+
+	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";
+	filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);
+	}
+
+.leaflet-oldie .leaflet-control-zoom,
+.leaflet-oldie .leaflet-control-layers,
+.leaflet-oldie .leaflet-popup-content-wrapper,
+.leaflet-oldie .leaflet-popup-tip {
+	border: 1px solid #999;
+	}
+
+
+/* div icon */
+
+.leaflet-div-icon {
+	background: #fff;
+	border: 1px solid #666;
+	}
+
+
+/* Tooltip */
+/* Base styles for the element that has a tooltip */
+.leaflet-tooltip {
+	position: absolute;
+	padding: 6px;
+	background-color: #fff;
+	border: 1px solid #fff;
+	border-radius: 3px;
+	color: #222;
+	white-space: nowrap;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	pointer-events: none;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+	}
+.leaflet-tooltip.leaflet-interactive {
+	cursor: pointer;
+	pointer-events: auto;
+	}
+.leaflet-tooltip-top:before,
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	position: absolute;
+	pointer-events: none;
+	border: 6px solid transparent;
+	background: transparent;
+	content: "";
+	}
+
+/* Directions */
+
+.leaflet-tooltip-bottom {
+	margin-top: 6px;
+}
+.leaflet-tooltip-top {
+	margin-top: -6px;
+}
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-top:before {
+	left: 50%;
+	margin-left: -6px;
+	}
+.leaflet-tooltip-top:before {
+	bottom: 0;
+	margin-bottom: -12px;
+	border-top-color: #fff;
+	}
+.leaflet-tooltip-bottom:before {
+	top: 0;
+	margin-top: -12px;
+	margin-left: -6px;
+	border-bottom-color: #fff;
+	}
+.leaflet-tooltip-left {
+	margin-left: -6px;
+}
+.leaflet-tooltip-right {
+	margin-left: 6px;
+}
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	top: 50%;
+	margin-top: -6px;
+	}
+.leaflet-tooltip-left:before {
+	right: 0;
+	margin-right: -12px;
+	border-left-color: #fff;
+	}
+.leaflet-tooltip-right:before {
+	left: 0;
+	margin-left: -12px;
+	border-right-color: #fff;
+	}
+
+/* Printing */
+
+@media print {
+	/* Prevent printers from removing background-images of controls. */
+	.leaflet-control {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+		}
+	}
+</style>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:#0f172a;color:#e2e8f0;overflow:hidden}
-#map{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1}
-#panel{position:fixed;top:0;right:0;width:370px;height:100%;background:rgba(15,23,42,.92);backdrop-filter:blur(12px);z-index:1000;overflow-y:auto;border-left:1px solid rgba(148,163,184,.15);transition:transform .3s}
-#panel.hide{transform:translateX(100%)}
-#toggle{position:fixed;top:12px;right:380px;z-index:1001;background:rgba(15,23,42,.85);border:1px solid rgba(148,163,184,.25);color:#e2e8f0;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:14px;backdrop-filter:blur(8px);transition:right .3s}
-#toggle.shifted{right:12px}
-.hdr{padding:20px 20px 10px;border-bottom:1px solid rgba(148,163,184,.12)}
-.hdr h1{font-size:18px;font-weight:700;color:#f8fafc;margin-bottom:2px}
-.hdr p{font-size:12px;color:#94a3b8}
-.tl{padding:12px 20px 20px}
-.ti{display:flex;gap:12px;position:relative;padding-bottom:6px}
-.ti:not(:last-child)::before{content:'';position:absolute;left:17px;top:38px;bottom:0;width:2px;background:rgba(148,163,184,.18)}
-.dot{width:36px;height:36px;min-width:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;margin-top:2px;position:relative;z-index:2}
-.dot.outline{background:transparent !important;border:2.5px solid}
-.info{flex:1;min-width:0}
-.info .nm{font-size:15px;font-weight:600;color:#f1f5f9}
-.info .dt{font-size:12px;color:#94a3b8;margin-top:1px}
-.info .st{font-size:12px;color:#cbd5e1;margin-top:1px}
-.tr{margin:6px 0 10px;padding:6px 10px;border-radius:6px;font-size:12px;display:flex;align-items:center;gap:6px}
-.tr .ic{font-size:15px}
-.legend{padding:16px 20px;border-top:1px solid rgba(148,163,184,.12)}
-.legend h3{font-size:13px;color:#94a3b8;margin-bottom:8px;font-weight:500}
-.lg{display:flex;flex-wrap:wrap;gap:8px}
-.lg span{display:flex;align-items:center;gap:5px;font-size:12px;color:#cbd5e1}
-.lg i{width:14px;height:4px;border-radius:2px;display:inline-block}
-.leaflet-popup-content-wrapper{background:rgba(15,23,42,.95)!important;color:#e2e8f0!important;border-radius:10px!important;border:1px solid rgba(148,163,184,.2)!important;box-shadow:0 8px 32px rgba(0,0,0,.5)!important}
-.leaflet-popup-tip{background:rgba(15,23,42,.95)!important}
-.leaflet-popup-content{margin:12px 16px!important;font-size:14px;line-height:1.5}
-.leaflet-popup-content strong{font-size:16px;color:#f8fafc}
-.leaflet-popup-content .sub{color:#94a3b8;font-size:12px;margin-top:4px}
-.leaflet-popup-content .det{margin-top:6px;font-size:13px;color:#cbd5e1}
-@media(max-width:600px){
-  #panel{width:100%;border-left:none}
-  #toggle{right:12px}
-  #toggle.shifted{right:12px}
-  .hdr h1{font-size:16px}
+/* Layout: full-bleed map → contained panel below */
+:root {
+  --bg: #0c1220;
+  --surface: #151d2e;
+  --surface-raised: #1a2438;
+  --border: rgba(255,255,255,0.08);
+  --border-active: rgba(255,255,255,0.18);
+  --fg: #e2e8f0;
+  --fg-dim: #7c8ba0;
+  --fg-muted: #4a5568;
+  --white: #f1f5f9;
+  --booked: #10b981;
+  --booked-bg: rgba(16,185,129,0.08);
+  --booked-border: rgba(16,185,129,0.35);
+  --pending: #64748b;
+  --flight: #e879a0;
+  --train: #f59e42;
+  --bus: #eab308;
+  --ferry: #22b8cf;
+  --font: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+  --mono: 'JetBrains Mono', 'SF Mono', monospace;
+  color-scheme: dark;
+}
+body { font-family: var(--font); background: var(--bg); color: var(--fg); }
+#map { width: 100%; height: 46vh; min-height: 300px; }
+#map .leaflet-tile-pane { filter: brightness(0.75) contrast(1.1); }
+
+.panel { padding: 24px 20px 48px; max-width: 860px; margin: 0 auto; }
+
+/* Header */
+.page-header { margin-bottom: 28px; }
+.page-title { font-size: 1.15rem; font-weight: 700; color: var(--white); letter-spacing: -0.01em; }
+.page-sub { font-size: 0.8rem; color: var(--fg-dim); margin-top: 2px; }
+
+/* Summary Dashboard */
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 28px; }
+.sum-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: center;
+}
+.sum-val { font-size: 1.5rem; font-weight: 700; font-family: var(--mono); color: var(--white); }
+.sum-label { font-size: 0.72rem; color: var(--fg-dim); margin-top: 2px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+.sum-card.accent-booked .sum-val { color: var(--booked); }
+.sum-card.accent-pending .sum-val { color: var(--pending); }
+
+/* Legend */
+.legend-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+.leg-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.72rem; font-weight: 600; color: var(--fg-dim);
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 4px 10px; border-radius: 6px;
+}
+.leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 28px; }
+.timeline::before {
+  content: ''; position: absolute; left: 11px; top: 8px; bottom: 8px;
+  width: 1.5px; background: var(--border-active);
+}
+.tl-item { position: relative; margin-bottom: 12px; cursor: pointer; }
+.tl-item:last-child { margin-bottom: 0; }
+.tl-dot {
+  position: absolute; left: -28px; top: 14px;
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid var(--dot-c, var(--fg-dim)); background: var(--bg); z-index: 2;
+  transition: transform 0.2s;
+}
+.tl-item:hover .tl-dot { transform: scale(1.3); }
+
+/* Stay Card */
+.card-stay {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--dot-c, var(--fg-dim));
+  border-radius: 10px;
+  padding: 16px 18px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.tl-item:hover .card-stay { border-color: var(--border-active); box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
+
+/* Move Card */
+.card-move {
+  background: transparent;
+  border: 1px dashed var(--border);
+  border-left: 3px solid var(--dot-c, var(--fg-dim));
+  border-radius: 8px;
+  padding: 10px 14px;
+  transition: background 0.2s;
+}
+.tl-item:hover .card-move { background: rgba(255,255,255,0.02); }
+
+.card-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+  margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.card-badge.badge-stay { background: rgba(255,255,255,0.06); color: var(--fg); }
+.card-badge.badge-move { background: var(--dot-c, var(--fg-dim)); color: #fff; }
+
+.card-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+.card-title { font-weight: 700; font-size: 1rem; color: var(--white); }
+.card-dates { font-size: 0.78rem; color: var(--fg-dim); font-weight: 500; }
+.card-stay-tag {
+  font-size: 0.72rem; font-weight: 700; color: var(--dot-c);
+  background: rgba(255,255,255,0.06); padding: 2px 8px; border-radius: 10px;
+}
+.card-desc { font-size: 0.8rem; color: var(--fg); margin-top: 3px; font-weight: 600; }
+.card-sub { font-size: 0.75rem; color: var(--fg-dim); margin-top: 2px; }
+
+/* Hotel / Ticket inner card */
+.detail-box {
+  margin-top: 10px; padding: 12px 14px;
+  background: rgba(12,18,32,0.6);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.detail-box.is-booked { border-color: var(--booked-border); background: var(--booked-bg); }
+
+.detail-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 6px; margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.detail-name { font-weight: 700; font-size: 0.88rem; color: var(--white); display: flex; align-items: center; gap: 5px; }
+.status-pill { font-size: 0.65rem; padding: 2px 7px; border-radius: 4px; font-weight: 700; }
+.pill-booked { background: var(--booked); color: #fff; }
+.pill-pending { background: var(--pending); color: #cbd5e1; }
+
+.detail-grid { display: flex; flex-direction: column; gap: 3px; font-size: 0.78rem; }
+.detail-row { display: flex; gap: 8px; line-height: 1.55; }
+.detail-label { color: var(--fg-muted); min-width: 62px; font-weight: 600; flex-shrink: 0; }
+.detail-val { color: var(--fg); word-break: break-all; }
+.detail-link { color: #38bdf8; text-decoration: underline; font-weight: 500; }
+.detail-link:hover { color: #7dd3fc; }
+
+/* Ticket passengers grid */
+.pax-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+@media (max-width: 500px) { .pax-grid { grid-template-columns: 1fr; } }
+.pax-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 6px; padding: 8px 10px;
+}
+.pax-name { font-weight: 700; font-size: 0.78rem; color: var(--white); margin-bottom: 4px; }
+.pax-detail { font-size: 0.72rem; color: var(--fg-dim); line-height: 1.5; }
+
+/* Leaflet popup */
+.dark-popup .leaflet-popup-content-wrapper {
+  background: var(--surface-raised); color: var(--fg); border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.5); border: 1px solid var(--border);
+}
+.dark-popup .leaflet-popup-tip { background: var(--surface-raised); }
+.dark-popup .leaflet-popup-content { margin: 10px 14px; font-size: 13px; line-height: 1.6; }
+.dark-popup .leaflet-popup-content strong { color: var(--white); }
+
+@media (max-width: 600px) {
+  .panel { padding: 16px 14px 40px; }
+  .summary { grid-template-columns: repeat(2, 1fr); }
+  .card-title { font-size: 0.92rem; }
 }
 </style>
-</head>
-<body>
+
 <div id="map"></div>
-<button id="toggle" onclick="togglePanel()">📋</button>
-<div id="panel">
-  <div class="hdr">
-    <h1>🌏 東南アジア周遊 2027</h1>
-    <p>2027年1月2日〜1月24日着（21泊22日）</p>
+<div class="panel">
+  <div class="page-header">
+    <div class="page-title">ベトナム・タイ 周遊ルート</div>
+    <div class="page-sub">2027.01.02 — 01.24（22日間・21泊）｜2名</div>
   </div>
-  <div class="tl" id="timeline"></div>
-  <div class="legend">
-    <h3>移動手段</h3>
-    <div class="lg">
-      <span><i style="background:#f472b6"></i>飛行機</span>
-      <span><i style="background:#f97316"></i>夜行列車</span>
-      <span><i style="background:#10b981"></i>長距離バス／バン</span>
-      <span><i style="background:#06b6d4"></i>フェリー／ボート</span>
-    </div>
+
+  <!-- Summary Dashboard -->
+  <div class="summary">
+    <div class="sum-card"><div class="sum-val">7</div><div class="sum-label">滞在地</div></div>
+    <div class="sum-card accent-booked"><div class="sum-val">2</div><div class="sum-label">手配済み</div></div>
+    <div class="sum-card accent-pending"><div class="sum-val">5</div><div class="sum-label">未手配</div></div>
+    <div class="sum-card"><div class="sum-val">21</div><div class="sum-label">泊</div></div>
   </div>
+
+  <!-- Legend -->
+  <div class="legend-row">
+    <div class="leg-chip"><span class="leg-dot" style="background:var(--flight)"></span>飛行機</div>
+    <div class="leg-chip"><span class="leg-dot" style="background:var(--train)"></span>寝台列車</div>
+    <div class="leg-chip"><span class="leg-dot" style="background:var(--bus)"></span>夜行バス</div>
+    <div class="leg-chip"><span class="leg-dot" style="background:var(--ferry)"></span>高速船</div>
+  </div>
+
+  <div class="timeline" id="timeline"></div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-// === データ定義（スクリーンショットの旅程に完全準拠）===
-var places = [
-  {id:'haneda',   name:'羽田空港',     lat:35.5494, lng:139.7798, color:'#a78bfa', type:'airport',
-   dates:'1/2 出発 → 1/24 帰国', popExtra:'出発・帰国空港'},
-  {id:'hcmc',     name:'ホーチミン',   lat:10.8231, lng:106.6297, color:'#f472b6', type:'city',
-   dates:'1/2〜1/5（3泊）/ 1/23 乗継', popExtra:'ベンタイン市場・戦争証跡博物館・フォーやバインミー'},
-  {id:'bangkok',  name:'バンコク',     lat:13.7563, lng:100.5018, color:'#fbbf24', type:'city',
-   dates:'1/5 トランジット', popExtra:'乗継拠点（夜行列車）'},
-  {id:'chiangmai',name:'チェンマイ',   lat:18.7883, lng:98.9853,  color:'#fb923c', type:'city',
-   dates:'1/6〜1/10（4泊）', popExtra:'旧市街寺院巡り・ナイトバザール・象保護施設'},
-  {id:'krabi',    name:'クラビ',       lat:8.0863,  lng:98.9063,  color:'#34d399', type:'city',
-   dates:'1/10〜1/13（3泊）', popExtra:'アオナンビーチ・タイガーケーブ寺院・周辺観光'},
-  {id:'lanta',    name:'ランタ島',     lat:7.5407,  lng:99.0452,  color:'#2dd4bf', type:'island',
-   dates:'1/13〜1/16（3泊）', popExtra:'ロングビーチ・旧市街・シュノーケリング'},
-  {id:'phiphi',   name:'ピピ島',       lat:7.7407,  lng:98.7784,  color:'#22d3ee', type:'island',
-   dates:'1/16〜1/19（3泊）', popExtra:'トンサイベイ周辺・ロングビーチ周辺'},
-  {id:'phuket',   name:'プーケット',   lat:7.8804,  lng:98.3923,  color:'#60a5fa', type:'city',
-   dates:'1/19〜1/23（4泊）', popExtra:'パトンビーチまたはオールドタウン周辺'}
+const places = [
+  { id:"haneda", name:"羽田空港", en:"Haneda", lat:35.5494, lng:139.7798, color:"#e11d48" },
+  { id:"hcmc", name:"ホーチミン", en:"Ho Chi Minh City", lat:10.8231, lng:106.6297, color:"#f59e0b", stay:"3泊4日", extra:"Airbnb 手配済" },
+  { id:"bangkok", name:"バンコク", en:"Bangkok", lat:13.7563, lng:100.5018, color:"#f97316", stay:"中継", extra:"乗継ハブ" },
+  { id:"chiangmai", name:"チェンマイ", en:"Chiang Mai", lat:18.7883, lng:98.9853, color:"#10b981", stay:"4泊5日", extra:"宿未定" },
+  { id:"krabi", name:"クラビ", en:"Krabi", lat:8.0863, lng:98.9063, color:"#3b82f6", stay:"3泊4日", extra:"宿未定" },
+  { id:"lanta", name:"ランタ島", en:"Koh Lanta", lat:7.6292, lng:99.0389, color:"#06b6d4", stay:"3泊4日", extra:"宿未定" },
+  { id:"phiphi", name:"ピピ島", en:"Koh Phi Phi", lat:7.7407, lng:98.7784, color:"#8b5cf6", stay:"3泊4日", extra:"宿未定" },
+  { id:"phuket", name:"プーケット", en:"Phuket", lat:7.8804, lng:98.3923, color:"#d946ef", stay:"3泊4日", extra:"宿未定" }
 ];
 
-var segments = [
-  {from:'haneda',  to:'hcmc',     color:'#f472b6', weight:2.5, dash:'8,6'},
-  {from:'hcmc',    to:'bangkok',  color:'#f472b6', weight:2.5, dash:'8,6'},
-  {from:'bangkok', to:'chiangmai',color:'#f97316', weight:3,   dash:null},
-  {from:'chiangmai',to:'krabi',   color:'#f472b6', weight:2.5, dash:'8,6'},
-  {from:'krabi',   to:'lanta',    color:'#06b6d4', weight:2.5, dash:'6,4'},
-  {from:'lanta',   to:'phiphi',   color:'#06b6d4', weight:2.5, dash:'6,4'},
-  {from:'phiphi',  to:'phuket',   color:'#06b6d4', weight:2.5, dash:'6,4'},
-  {from:'phuket',  to:'hcmc',     color:'#f472b6', weight:2.5, dash:'8,6'},
-  {from:'hcmc',    to:'haneda',   color:'#f472b6', weight:2.5, dash:'8,6'}
+const segments = [
+  { from:"haneda", to:"hcmc", color:"#e879a0", w:2, dash:"6 8", via:[[22,125]] },
+  { from:"hcmc", to:"bangkok", color:"#e879a0", w:2, dash:"6 8" },
+  { from:"bangkok", to:"chiangmai", color:"#f59e42", w:3 },
+  { from:"chiangmai", to:"bangkok", color:"#e879a0", w:2, dash:"6 8" },
+  { from:"bangkok", to:"krabi", color:"#eab308", w:3 },
+  { from:"krabi", to:"lanta", color:"#22b8cf", w:2.5, dash:"8 6" },
+  { from:"lanta", to:"phiphi", color:"#22b8cf", w:2.5, dash:"8 6" },
+  { from:"phiphi", to:"phuket", color:"#22b8cf", w:2.5, dash:"8 6" },
+  { from:"phuket", to:"hcmc", color:"#e879a0", w:2, dash:"6 8" },
+  { from:"hcmc", to:"haneda", color:"#e879a0", w:2, dash:"6 8", via:[[22,125]] }
 ];
 
-var timeline = [
-  {place:'羽田空港',   dates:'1/2（土）',     stay:'',            color:'#a78bfa', filled:false,
-   transport:{text:'✈ JAL079便｜1/2 01:25発 → 05:50着（ホーチミン）', bg:'rgba(244,114,182,.15)', fg:'#f472b6'}},
-  {place:'ホーチミン', dates:'1/2〜1/5',      stay:'3泊',         color:'#f472b6', filled:true,
-   transport:{text:'✈ VN605便｜1/5 11:35発 → 13:10着（バンコク）', bg:'rgba(244,114,182,.15)', fg:'#f472b6'}},
-  {place:'バンコク',   dates:'1/5（火）',     stay:'トランジット', color:'#fbbf24', filled:false,
-   transport:{text:'🚂 夜行列車でチェンマイへ（約13時間）', bg:'rgba(249,115,22,.15)', fg:'#f97316'}},
-  {place:'チェンマイ', dates:'1/6〜1/10',     stay:'4泊',         color:'#fb923c', filled:true,
-   transport:{text:'✈ FD3076便｜1/10 12:55発 → 14:55着（クラビ）', bg:'rgba(244,114,182,.15)', fg:'#f472b6'}},
-  {place:'クラビ',     dates:'1/10〜1/13',    stay:'3泊',         color:'#34d399', filled:true,
-   transport:{text:'⛴ フェリーでランタ島へ', bg:'rgba(6,182,212,.15)', fg:'#06b6d4'}},
-  {place:'ランタ島',   dates:'1/13〜1/16',    stay:'3泊',         color:'#2dd4bf', filled:true,
-   transport:{text:'⛴ スピードボートでピピ島へ', bg:'rgba(6,182,212,.15)', fg:'#06b6d4'}},
-  {place:'ピピ島',     dates:'1/16〜1/19',    stay:'3泊',         color:'#22d3ee', filled:true,
-   transport:{text:'⛴ 大型船でプーケットへ', bg:'rgba(6,182,212,.15)', fg:'#06b6d4'}},
-  {place:'プーケット', dates:'1/19〜1/23',    stay:'4泊',         color:'#60a5fa', filled:true,
-   transport:{text:'✈ VN620便｜1/23 18:50発 → 20:55着（ホーチミン）', bg:'rgba(244,114,182,.15)', fg:'#f472b6'}},
-  {place:'ホーチミン', dates:'1/23',            stay:'乗継',        color:'#f472b6', filled:false,
-   transport:{text:'✈ JAL070便｜1/23 23:45発 → 1/24 06:50着（羽田）', bg:'rgba(244,114,182,.15)', fg:'#f472b6'}},
-  {place:'羽田空港',   dates:'1/24（土）06:50着', stay:'帰国',    color:'#a78bfa', filled:false, transport:null}
+const timeline = [
+  { type:"move", mc:"#e879a0", badge:"✈ Flight", title:"羽田空港 → ホーチミン", dates:"1/2（土）", desc:"羽田（HND）→ タンソンニャット（SGN）", sub:"直行便" },
+  { type:"stay", c:"#f59e0b", mapId:"hcmc", title:"ホーチミン", dates:"1/2（土）— 1/5（火）", tag:"3泊4日",
+    hotel:{ booked:true, name:"Airbnb（ホーチミン）", addr:"予約確定 — Airbnb管理画面参照", io:"1/2 IN → 1/5 OUT", url:"https://www.airbnb.jp/rooms/20804337?source_impression_id=p3_1789962434_P3Dm3-ls1heiNC8A", note:"手配完了" }},
+  { type:"move", mc:"#e879a0", badge:"✈ Flight", title:"ホーチミン → バンコク", dates:"1/5（火）昼", desc:"SGN → BKK/DMK", sub:"国際線（約1.5h）", mapId:"bangkok" },
+  { type:"move", mc:"#f59e42", badge:"🚂 寝台列車", title:"バンコク → チェンマイ", dates:"1/5（火）18:40発 — 1/6 07:15着", desc:"クルンテープ・アピワット中央駅 → チェンマイ駅", sub:"Special Express CNR（列車No.9）", mapId:"chiangmai",
+    ticket:{ booked:true, trainNo:"9", route:"Krung Thep Aphiwat → Chiang Mai", dep:"18:40", arr:"07:15",
+      pax:[
+        { name:"MITSUSHI SHIMADA", ticketNo:"90002800827401", car:6, seat:16, berth:"Lower（下段）", price:"1,038 THB" },
+        { name:"SAYAKA SHIMADA", ticketNo:"90002800827402", car:6, seat:15, berth:"Upper（上段）", price:"938 THB" }
+      ]}},
+  { type:"stay", c:"#10b981", mapId:"chiangmai", title:"チェンマイ", dates:"1/6（水）— 1/10（日）", tag:"4泊5日",
+    hotel:{ booked:false, name:"未定", addr:"-", io:"1/6 IN → 1/10 OUT", note:"旧市街 or ニマンヘミン推奨" }},
+  { type:"move", mc:"#e879a0", badge:"✈ Flight", title:"チェンマイ → バンコク", dates:"1/10（日）午前", desc:"CNX → DMK/BKK", sub:"国内線（約1.5h）", mapId:"bangkok" },
+  { type:"move", mc:"#eab308", badge:"🚌 夜行バス", title:"バンコク → クラビ", dates:"1/10（日）夜発 — 1/11 朝着", desc:"南バスターミナル → クラビBT", sub:"VIPバス（約12h）", mapId:"krabi" },
+  { type:"stay", c:"#3b82f6", mapId:"krabi", title:"クラビ", dates:"1/11（月）— 1/14（木）", tag:"3泊4日",
+    hotel:{ booked:false, name:"未定", addr:"-", io:"1/11 IN → 1/14 OUT", note:"アオナンビーチ周辺推奨" }},
+  { type:"move", mc:"#22b8cf", badge:"⛴ Ferry", title:"クラビ → ランタ島", dates:"1/14（木）", desc:"アオナン → サラダン港", sub:"フェリー（約2h）", mapId:"lanta" },
+  { type:"stay", c:"#06b6d4", mapId:"lanta", title:"ランタ島", dates:"1/14（木）— 1/17（日）", tag:"3泊4日",
+    hotel:{ booked:false, name:"未定", addr:"-", io:"1/14 IN → 1/17 OUT", note:"ロングビーチ / クロンダオ推奨" }},
+  { type:"move", mc:"#22b8cf", badge:"⛴ Ferry", title:"ランタ島 → ピピ島", dates:"1/17（日）", desc:"サラダン港 → トンサイ港", sub:"高速船（約1h）", mapId:"phiphi" },
+  { type:"stay", c:"#8b5cf6", mapId:"phiphi", title:"ピピ島", dates:"1/17（日）— 1/20（水）", tag:"3泊4日",
+    hotel:{ booked:false, name:"未定", addr:"-", io:"1/17 IN → 1/20 OUT", note:"トンサイベイ周辺推奨" }},
+  { type:"move", mc:"#22b8cf", badge:"⛴ Ferry", title:"ピピ島 → プーケット", dates:"1/20（水）", desc:"トンサイ港 → ラサダ港", sub:"フェリー（約1.5h）", mapId:"phuket" },
+  { type:"stay", c:"#d946ef", mapId:"phuket", title:"プーケット", dates:"1/20（水）— 1/23（土）", tag:"3泊4日",
+    hotel:{ booked:false, name:"未定", addr:"-", io:"1/20 IN → 1/23 OUT", note:"パトンビーチ or オールドタウン推奨" }},
+  { type:"move", mc:"#e879a0", badge:"✈ 帰国便", title:"プーケット → ホーチミン → 羽田", dates:"1/23（土）— 1/24（日）", desc:"HKT → SGN経由 → HND", sub:"1/24 日本帰国", mapId:"haneda" }
 ];
 
-// === 地図初期化 ===
-var map = L.map('map',{zoomControl:false}).setView([13.5,102],5);
-L.control.zoom({position:'bottomleft'}).addTo(map);
-
-L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&hl=ja&x={x}&y={y}&z={z}',{
-  attribution:'Map data &copy; Google',
-  subdomains:'0123',
-  maxZoom:20
+// ===== MAP =====
+const map = L.map('map', { zoomControl: true, scrollWheelZoom: true });
+L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&hl=ja&x={x}&y={y}&z={z}', {
+  attribution: 'Map data &copy; Google',
+  subdomains: '0123',
+  maxZoom: 20
 }).addTo(map);
 
-// === マーカー配置 ===
-var placeMap = {};
-places.forEach(function(p){placeMap[p.id]=p;});
+const byId = id => places.find(p => p.id === id);
 
-var icons = {airport:'✈️', city:'📍', island:'🏝️'};
-places.forEach(function(p,i){
-  var iconHtml = '<div style="width:38px;height:38px;border-radius:50%;'
-    +'background:'+p.color+';display:flex;align-items:center;justify-content:center;'
-    +'font-size:18px;box-shadow:0 2px 12px '+p.color+'66;border:2px solid rgba(255,255,255,.3)">'
-    +(icons[p.type]||'📍')+'</div>';
-  var mk = L.marker([p.lat,p.lng],{
-    icon:L.divIcon({className:'',html:iconHtml,iconSize:[38,38],iconAnchor:[19,19]})
-  }).addTo(map);
-
-  var popup = '<strong>'+p.name+'</strong>'
-    +'<div class="sub">'+p.dates+'</div>';
-  if(p.popExtra) popup+='<div class="det">'+p.popExtra+'</div>';
-  mk.bindPopup(popup);
-});
-
-// === ルート線 ===
-segments.forEach(function(s){
-  var a=placeMap[s.from], b=placeMap[s.to];
-  if(!a||!b) return;
-
-  var pts;
-  var dist = Math.sqrt(Math.pow(a.lat-b.lat,2)+Math.pow(a.lng-b.lng,2));
-  if(dist>8){
-    var midLat=(a.lat+b.lat)/2, midLng=(a.lng+b.lng)/2;
-    var dx=b.lng-a.lng, dy=b.lat-a.lat;
-    midLat+=Math.abs(dx)*0.08; midLng-=dy*0.08;
-    pts=[];
-    for(var t=0;t<=1;t+=0.05){
-      var lt=(1-t)*(1-t)*a.lat+2*(1-t)*t*midLat+t*t*b.lat;
-      var ln=(1-t)*(1-t)*a.lng+2*(1-t)*t*midLng+t*t*b.lng;
-      pts.push([lt,ln]);
-    }
-  } else {
-    pts=[[a.lat,a.lng],[b.lat,b.lng]];
-  }
-
-  L.polyline(pts,{
-    color:s.color, weight:s.weight, opacity:0.7,
-    dashArray:s.dash||null
+segments.forEach(s => {
+  const f = byId(s.from), t = byId(s.to);
+  L.polyline([[f.lat,f.lng], ...(s.via||[]), [t.lat,t.lng]], {
+    color: s.color, weight: s.w, opacity: 0.7, dashArray: s.dash||null, smoothFactor: 1.5
   }).addTo(map);
 });
 
-// === タイムライン生成 ===
-var tlEl = document.getElementById('timeline');
-timeline.forEach(function(t,i){
-  var html='<div class="ti">';
-  var dotStyle = t.filled
-    ? 'background:'+t.color
-    : 'border-color:'+t.color;
-  html+='<div class="dot '+(t.filled?'':'outline')+'" style="'+dotStyle+'">'
-    +(i+1)+'</div>';
-  html+='<div class="info">';
-  html+='<div class="nm">'+t.place+'</div>';
-  html+='<div class="dt">'+t.dates+(t.stay?' ／ '+t.stay:'')+'</div>';
-  if(t.transport){
-    html+='<div class="tr" style="background:'+t.transport.bg+';color:'+t.transport.fg+'">';
-    html+=t.transport.text+'</div>';
-  }
-  html+='</div></div>';
-  tlEl.innerHTML+=html;
+const markers = {};
+let idx = 1;
+places.forEach(p => {
+  const isH = p.id === 'haneda';
+  const label = isH ? '✈' : idx++;
+  const icon = L.divIcon({ className:'', iconSize:[32,32], iconAnchor:[16,16], popupAnchor:[0,-18],
+    html: `<div style="width:32px;height:32px;border-radius:50%;background:${p.color};display:flex;align-items:center;justify-content:center;font-size:${isH?'14px':'12px'};font-weight:800;color:#fff;box-shadow:0 2px 10px ${p.color}55;border:2px solid rgba(255,255,255,0.3)">${label}</div>`
+  });
+  let pop = `<strong>${p.name}（${p.en}）</strong>`;
+  if (p.stay) pop += ` <span style="color:${p.color};font-weight:700">［${p.stay}］</span>`;
+  if (p.extra) pop += `<br><span style="color:#94a3b8;font-size:12px">${p.extra}</span>`;
+  markers[p.id] = L.marker([p.lat,p.lng],{icon}).addTo(map).bindPopup(pop, {className:'dark-popup'});
 });
 
-// === パネル開閉 ===
-function togglePanel(){
-  var p=document.getElementById('panel');
-  var b=document.getElementById('toggle');
-  p.classList.toggle('hide');
-  b.classList.toggle('shifted');
+const seaPts = places.filter(p => p.id !== 'haneda').map(p => [p.lat, p.lng]);
+map.fitBounds(seaPts, { padding: [35, 35] });
+
+function panTo(id) {
+  const p = byId(id);
+  if (!p) return;
+  map.flyTo([p.lat, p.lng], 8, { duration: 0.8 });
+  setTimeout(() => markers[id]?.openPopup(), 850);
 }
 
-// === 地図範囲をルート全体にフィット ===
-var bounds = L.latLngBounds(places.map(function(p){return[p.lat,p.lng];}));
-map.fitBounds(bounds,{padding:[40,40]});
+// ===== TIMELINE =====
+const tlEl = document.getElementById('timeline');
+
+timeline.forEach(item => {
+  const isStay = item.type === 'stay';
+  const el = document.createElement('div');
+  el.className = 'tl-item';
+  const dc = isStay ? item.c : item.mc;
+  el.style.setProperty('--dot-c', dc);
+
+  if (item.mapId) el.onclick = () => panTo(item.mapId);
+
+  let h = `<div class="tl-dot"></div>`;
+
+  if (isStay) {
+    h += `<div class="card-stay">`;
+    h += `<div class="card-badge badge-stay">🏨 滞在</div>`;
+    h += `<div class="card-row"><span class="card-title">${item.title}</span><span class="card-stay-tag">${item.tag}</span></div>`;
+    h += `<div class="card-dates">${item.dates}</div>`;
+
+    if (item.hotel) {
+      const ht = item.hotel;
+      h += `<div class="detail-box ${ht.booked ? 'is-booked' : ''}">`;
+      h += `<div class="detail-header"><div class="detail-name">🏠 ${ht.name}</div>`;
+      h += `<span class="status-pill ${ht.booked?'pill-booked':'pill-pending'}">${ht.booked?'手配済':'未手配'}</span></div>`;
+      h += `<div class="detail-grid">`;
+      h += `<div class="detail-row"><span class="detail-label">日程</span><span class="detail-val">${ht.io}</span></div>`;
+      h += `<div class="detail-row"><span class="detail-label">住所</span><span class="detail-val">${ht.addr}</span></div>`;
+      if (ht.url) h += `<div class="detail-row"><span class="detail-label">予約</span><span class="detail-val"><a class="detail-link" href="${ht.url}" target="_blank" rel="noopener">予約ページ ↗</a></span></div>`;
+      if (ht.note) h += `<div class="detail-row"><span class="detail-label">メモ</span><span class="detail-val" style="color:var(--fg-dim)">${ht.note}</span></div>`;
+      h += `</div></div>`;
+    }
+    h += `</div>`;
+
+  } else {
+    h += `<div class="card-move">`;
+    h += `<div class="card-badge badge-move">${item.badge}</div>`;
+    h += `<div class="card-row"><span class="card-title">${item.title}</span><span class="card-dates">${item.dates}</span></div>`;
+    h += `<div class="card-desc">${item.desc}</div>`;
+    if (item.sub) h += `<div class="card-sub">${item.sub}</div>`;
+
+    // Ticket detail
+    if (item.ticket) {
+      const tk = item.ticket;
+      h += `<div class="detail-box is-booked">`;
+      h += `<div class="detail-header"><div class="detail-name">🎫 列車チケット（2名分）</div>`;
+      h += `<span class="status-pill pill-booked">予約済</span></div>`;
+      h += `<div class="detail-grid">`;
+      h += `<div class="detail-row"><span class="detail-label">列車</span><span class="detail-val">Train No.${tk.trainNo}（Special Express CNR）</span></div>`;
+      h += `<div class="detail-row"><span class="detail-label">区間</span><span class="detail-val">${tk.route}</span></div>`;
+      h += `<div class="detail-row"><span class="detail-label">時刻</span><span class="detail-val">${tk.dep} 発 → ${tk.arr} 着</span></div>`;
+      h += `</div>`;
+      h += `<div class="pax-grid">`;
+      tk.pax.forEach(p => {
+        h += `<div class="pax-card">`;
+        h += `<div class="pax-name">${p.name}</div>`;
+        h += `<div class="pax-detail">Car ${p.car} / Seat ${p.seat}<br>${p.berth}<br>${p.price}</div>`;
+        h += `</div>`;
+      });
+      h += `</div></div>`;
+    }
+    h += `</div>`;
+  }
+
+  el.innerHTML = h;
+  tlEl.appendChild(el);
+});
 </script>
-</body>
-</html>
+
+</body></html>
