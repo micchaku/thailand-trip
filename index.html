@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }</style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }</style>
 <title>Vietnam-Thailand Route</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" />
 <style>/* Leaflet 1.9.4 */
@@ -839,8 +839,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg); displa
   .card-title { font-size: 0.92rem; }
 }
 </style>
-</head>
-<body>
+
 <div id="map"></div>
 <div class="panel-wrap">
 <div class="panel">
@@ -852,8 +851,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg); displa
   <!-- Summary Dashboard -->
   <div class="summary">
     <div class="sum-card"><div class="sum-val">7</div><div class="sum-label">滞在地</div></div>
-    <div class="sum-card accent-booked"><div class="sum-val">3</div><div class="sum-label">手配済み</div></div>
-    <div class="sum-card accent-pending"><div class="sum-val">4</div><div class="sum-label">未手配</div></div>
+    <div class="sum-card accent-booked"><div class="sum-val">5</div><div class="sum-label">手配済み</div></div>
+    <div class="sum-card accent-pending"><div class="sum-val">2</div><div class="sum-label">未手配</div></div>
     <div class="sum-card"><div class="sum-val">21</div><div class="sum-label">泊</div></div>
   </div>
 
@@ -861,8 +860,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg); displa
   <div class="legend-row">
     <div class="leg-chip"><span class="leg-dot" style="background:var(--flight)"></span>飛行機</div>
     <div class="leg-chip"><span class="leg-dot" style="background:var(--train)"></span>寝台列車</div>
-    <div class="leg-chip"><span class="leg-dot" style="background:var(--ferry)"></span>高速船</div>
-    <div class="leg-chip"><span class="leg-dot" style="background:var(--car)"></span>タクシー / 車</div>
+    <div class="leg-chip"><span class="leg-dot" style="background:var(--ferry)"></span>フェリー</div>
   </div>
 
   <div class="timeline" id="timeline"></div>
@@ -876,10 +874,10 @@ const places = [
   { id:"hcmc", name:"ホーチミン", en:"Ho Chi Minh City", lat:10.8231, lng:106.6297, color:"#f59e0b", stay:"3泊4日", extra:"Airbnb 手配済" },
   { id:"bangkok", name:"バンコク", en:"Bangkok", lat:13.7563, lng:100.5018, color:"#f97316", stay:"中継", extra:"乗継ハブ" },
   { id:"chiangmai", name:"チェンマイ", en:"Chiang Mai", lat:18.7883, lng:98.9853, color:"#10b981", stay:"4泊5日", extra:"宿未定" },
-  { id:"krabi", name:"クラビ", en:"Krabi", lat:8.0863, lng:98.9063, color:"#3b82f6", stay:"3泊4日", extra:"宿未定" },
-  { id:"lanta", name:"ランタ島", en:"Koh Lanta", lat:7.6292, lng:99.0389, color:"#06b6d4", stay:"3泊4日", extra:"宿未定" },
-  { id:"phuket", name:"プーケット", en:"Phuket", lat:7.8804, lng:98.3923, color:"#d946ef", stay:"4泊（3+前泊1）", extra:"宿未定" },
-  { id:"khaolak", name:"カオラック", en:"Khao Lak", lat:8.6280, lng:98.2464, color:"#14b8a6", stay:"3泊4日", extra:"宿未定" }
+  { id:"krabi", name:"クラビ", en:"Krabi", lat:8.0863, lng:98.9063, color:"#3b82f6", stay:"3泊4日", extra:"Venice Krabi Villa Resort（Agoda予約済）" },
+  { id:"lanta", name:"ランタ島", en:"Koh Lanta", lat:7.6292, lng:99.0389, color:"#06b6d4", stay:"3泊4日", extra:"Cliff Lanta Suite（Agoda予約済）" },
+  { id:"phuket", name:"プーケット", en:"Phuket", lat:7.8804, lng:98.3923, color:"#d946ef", stay:"4泊5日", extra:"宿未定" },
+  { id:"yaonoi", name:"ヤオノイ島", en:"Koh Yao Noi", lat:8.1307, lng:98.5810, color:"#14b8a6", stay:"3泊4日", extra:"宿未定" }
 ];
 
 const segments = [
@@ -888,9 +886,8 @@ const segments = [
   { from:"bangkok", to:"chiangmai", color:"#f59e42", w:3 },
   { from:"chiangmai", to:"krabi", color:"#e879a0", w:2, dash:"6 8" },
   { from:"krabi", to:"lanta", color:"#22b8cf", w:2.5, dash:"8 6" },
-  { from:"lanta", to:"phuket", color:"#22b8cf", w:2.5, dash:"8 6" },
-  { from:"phuket", to:"khaolak", color:"#a78bfa", w:2, dash:"4 6" },
-  { from:"khaolak", to:"phuket", color:"#a78bfa", w:2, dash:"4 6" },
+  { from:"lanta", to:"yaonoi", color:"#22b8cf", w:2.5, dash:"8 6" },
+  { from:"yaonoi", to:"phuket", color:"#22b8cf", w:2.5, dash:"8 6" },
   { from:"phuket", to:"hcmc", color:"#e879a0", w:2, dash:"6 8" },
   { from:"hcmc", to:"haneda", color:"#e879a0", w:2, dash:"6 8", via:[[22,125]] }
 ];
@@ -913,19 +910,16 @@ const timeline = [
   { type:"move", mc:"#e879a0", badge:"✈ Flight", title:"チェンマイ → クラビ", dates:"1/10（日）", desc:"CNX → クラビ空港（KBV）", sub:"タイ・エアアジア（約2h）", mapId:"krabi",
     flight:{ flightNo:"FD3076", airline:"タイ・エアアジア", dep:"12:55", depAirport:"チェンマイ空港（CNX）", arr:"14:55", arrAirport:"クラビ空港（KBV）", duration:"約2h" }},
   { type:"stay", c:"#3b82f6", mapId:"krabi", title:"クラビ", dates:"1/10（日）— 1/13（水）", tag:"3泊4日",
-    hotel:{ booked:false, name:"未定", addr:"-", io:"1/10 IN → 1/13 OUT", note:"アオナンビーチ周辺推奨" }},
+    hotel:{ booked:true, name:"Venice Krabi Villa Resort", addr:"Krabi, Thailand", io:"1/10 IN → 1/13 OUT", mapUrl:"https://maps.app.goo.gl/fgXZwQNqaT6Ar3yQA", note:"Agoda予約済" }},
   { type:"move", mc:"#22b8cf", badge:"⛴ Ferry", title:"クラビ → ランタ島", dates:"1/13（水）", desc:"アオナン → サラダン港", sub:"フェリー（約2h）", mapId:"lanta" },
   { type:"stay", c:"#06b6d4", mapId:"lanta", title:"ランタ島", dates:"1/13（水）— 1/16（土）", tag:"3泊4日",
-    hotel:{ booked:false, name:"未定", addr:"-", io:"1/13 IN → 1/16 OUT", note:"ロングビーチ / クロンダオ推奨" }},
-  { type:"move", mc:"#22b8cf", badge:"⛴ Ferry", title:"ランタ島 → プーケット", dates:"1/16（土）", desc:"サラダン港 → ラサダ港", sub:"フェリー（約2.5h）", mapId:"phuket" },
-  { type:"stay", c:"#d946ef", mapId:"phuket", title:"プーケット", dates:"1/16（土）— 1/19（火）", tag:"3泊",
-    hotel:{ booked:false, name:"未定", addr:"-", io:"1/16 IN → 1/19 OUT", note:"パトンビーチ or オールドタウン推奨" }},
-  { type:"move", mc:"#a78bfa", badge:"🚐 車", title:"プーケット → カオラック", dates:"1/19（火）", desc:"プーケット市内 → カオラック", sub:"タクシー / ミニバン（約1.5h）", mapId:"khaolak" },
-  { type:"stay", c:"#14b8a6", mapId:"khaolak", title:"カオラック", dates:"1/19（火）— 1/22（金）", tag:"3泊",
-    hotel:{ booked:false, name:"未定", addr:"-", io:"1/19 IN → 1/22 OUT", note:"シミラン諸島ツアー拠点・ビーチリゾート" }},
-  { type:"move", mc:"#a78bfa", badge:"🚐 車", title:"カオラック → プーケット", dates:"1/22（金）", desc:"カオラック → プーケット市内", sub:"タクシー / ミニバン（約1.5h）", mapId:"phuket" },
-  { type:"stay", c:"#d946ef", mapId:"phuket", title:"プーケット（前泊）", dates:"1/22（金）— 1/23（土）", tag:"前泊1泊",
-    hotel:{ booked:false, name:"未定", addr:"-", io:"1/22 IN → 1/23 OUT", note:"空港近く or パトン推奨" }},
+    hotel:{ booked:true, name:"Cliff Lanta Suite", addr:"Koh Lanta, Krabi, Thailand", io:"1/13 IN → 1/16 OUT", mapUrl:"https://maps.app.goo.gl/EWRePJmKQDGZb9He9", note:"Agoda予約済" }},
+  { type:"move", mc:"#22b8cf", badge:"⛴ Ferry", title:"ランタ島 → ヤオノイ島", dates:"1/16（土）", desc:"サラダン港 → ヤオノイ島", sub:"フェリー乗継（ランタ→プーケット→ヤオノイ）", mapId:"yaonoi" },
+  { type:"stay", c:"#14b8a6", mapId:"yaonoi", title:"ヤオノイ島", dates:"1/16（土）— 1/19（火）", tag:"3泊4日",
+    hotel:{ booked:false, name:"未定", addr:"-", io:"1/16 IN → 1/19 OUT", note:"静かな離島リゾート・パンガー湾" }},
+  { type:"move", mc:"#22b8cf", badge:"⛴ Ferry", title:"ヤオノイ島 → プーケット", dates:"1/19（火）", desc:"ヤオノイ島 → ラサダ港", sub:"フェリー（約1h）", mapId:"phuket" },
+  { type:"stay", c:"#d946ef", mapId:"phuket", title:"プーケット", dates:"1/19（火）— 1/23（土）", tag:"4泊5日",
+    hotel:{ booked:false, name:"未定", addr:"-", io:"1/19 IN → 1/23 OUT", note:"パトンビーチ or オールドタウン推奨" }},
   { type:"move", mc:"#e879a0", badge:"✈ 帰国便", title:"プーケット → ホーチミン → 羽田", dates:"1/23（土）— 1/24（日）", desc:"HKT → SGN経由 → HND", sub:"1/24 日本帰国", mapId:"haneda",
     flights:[
       { flightNo:"VN620", airline:"ベトナム航空", dep:"18:50", depAirport:"プーケット空港（HKT）", arr:"20:55", arrAirport:"タンソンニャット空港（SGN）", duration:"約2h05m", date:"1/23" },
@@ -1073,6 +1067,4 @@ timeline.forEach(item => {
   tlEl.appendChild(el);
 });
 </script>
-
-</body>
-</html>
+</head><body></body></html>
