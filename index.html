@@ -757,6 +757,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg); displa
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .tl-item:hover .card-stay { border-color: var(--border-active); box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
+.tl-item.is-highlight .card-stay { border-color: var(--booked); box-shadow: 0 0 20px rgba(16,185,129,0.3); transition: border-color 0.3s, box-shadow 0.3s; }
 
 /* Move Card */
 .card-move {
@@ -955,7 +956,10 @@ places.forEach(p => {
   let pop = `<strong>${p.name}（${p.en}）</strong>`;
   if (p.stay) pop += ` <span style="color:${p.color};font-weight:700">［${p.stay}］</span>`;
   if (p.extra) pop += `<br><span style="color:#94a3b8;font-size:12px">${p.extra}</span>`;
-  markers[p.id] = L.marker([p.lat,p.lng],{icon}).addTo(map).bindPopup(pop, {className:'dark-popup'});
+  const m = L.marker([p.lat,p.lng],{icon}).addTo(map).bindPopup(pop, {className:'dark-popup'});
+  m._placeId = p.id;
+  m.on('click', () => scrollToTimeline(p.id));
+  markers[p.id] = m;
 });
 
 const seaPts = places.filter(p => p.id !== 'haneda').map(p => [p.lat, p.lng]);
@@ -968,6 +972,14 @@ function panTo(id) {
   setTimeout(() => markers[id]?.openPopup(), 850);
 }
 
+function scrollToTimeline(id) {
+  const el = document.querySelector(`.tl-item[data-map-id="${id}"]`);
+  if (!el) return;
+  el.scrollIntoView({ behavior:'smooth', block:'center' });
+  el.classList.add('is-highlight');
+  setTimeout(() => el.classList.remove('is-highlight'), 2000);
+}
+
 // ===== TIMELINE =====
 const tlEl = document.getElementById('timeline');
 
@@ -978,7 +990,10 @@ timeline.forEach(item => {
   const dc = isStay ? item.c : item.mc;
   el.style.setProperty('--dot-c', dc);
 
-  if (item.mapId) el.onclick = () => panTo(item.mapId);
+  if (item.mapId) {
+    el.setAttribute('data-map-id', item.mapId);
+    el.onclick = () => panTo(item.mapId);
+  }
 
   let h = `<div class="tl-dot"></div>`;
 
