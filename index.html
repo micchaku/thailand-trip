@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="ベトナム・タイ旅行ルートマップ 2027年1月">
-<style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;box-sizing:border-box}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Vietnam-Thailand Route</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" />
 <style>/* Leaflet 1.9.4 */
@@ -852,8 +851,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg); displa
   <!-- Summary Dashboard -->
   <div class="summary">
     <div class="sum-card"><div class="sum-val">7</div><div class="sum-label">滞在地</div></div>
-    <div class="sum-card accent-booked"><div class="sum-val">5</div><div class="sum-label">手配済み</div></div>
-    <div class="sum-card accent-pending"><div class="sum-val">2</div><div class="sum-label">未手配</div></div>
+    <div class="sum-card accent-booked"><div class="sum-val">6</div><div class="sum-label">手配済み</div></div>
+    <div class="sum-card accent-pending"><div class="sum-val">1</div><div class="sum-label">未手配</div></div>
     <div class="sum-card"><div class="sum-val">21</div><div class="sum-label">泊</div></div>
   </div>
 
@@ -877,7 +876,7 @@ const places = [
   { id:"chiangmai", name:"チェンマイ", en:"Chiang Mai", lat:18.7883, lng:98.9853, color:"#10b981", stay:"4泊5日", extra:"宿未定" },
   { id:"krabi", name:"クラビ", en:"Krabi", lat:8.0863, lng:98.9063, color:"#3b82f6", stay:"3泊4日", extra:"Venice Krabi Villa Resort（Agoda予約済）" },
   { id:"lanta", name:"ランタ島", en:"Koh Lanta", lat:7.6292, lng:99.0389, color:"#06b6d4", stay:"3泊4日", extra:"Cliff Lanta Suite（Agoda予約済）" },
-  { id:"yaonoi", name:"ヤオノイ島", en:"Koh Yao Noi", lat:8.1307, lng:98.5810, color:"#14b8a6", stay:"3泊4日", extra:"宿未定" },
+  { id:"yaonoi", name:"ヤオノイ島", en:"Koh Yao Noi", lat:8.1307, lng:98.5810, color:"#14b8a6", stay:"3泊4日", extra:"マリンハウス（Airbnb予約済）" },
   { id:"phuket", name:"プーケット", en:"Phuket", lat:7.8804, lng:98.3923, color:"#d946ef", stay:"4泊5日", extra:"宿未定" }
 ];
 
@@ -917,7 +916,7 @@ const timeline = [
     hotel:{ booked:true, name:"Cliff Lanta Suite", addr:"Koh Lanta, Krabi, Thailand", io:"1/13 IN → 1/16 OUT", mapUrl:"https://maps.app.goo.gl/EWRePJmKQDGZb9He9", note:"Agoda予約済" }},
   { type:"move", mc:"#22b8cf", badge:"⛴ Ferry", title:"ランタ島 → ヤオノイ島", dates:"1/16（土）", desc:"サラダン港 → ヤオノイ島", sub:"フェリー乗継（ランタ→プーケット→ヤオノイ）", mapId:"yaonoi" },
   { type:"stay", c:"#14b8a6", mapId:"yaonoi", title:"ヤオノイ島", dates:"1/16（土）— 1/19（火）", tag:"3泊4日",
-    hotel:{ booked:false, name:"未定", addr:"-", io:"1/16 IN → 1/19 OUT", note:"静かな離島リゾート・パンガー湾" }},
+    hotel:{ booked:true, name:"マリンハウス（Marine House）", addr:"Koh Yao Noi, Phang Nga, Thailand", io:"1/16 IN → 1/19 OUT", url:"https://www.airbnb.jp/rooms/37923265", note:"Airbnb予約済｜一軒家 2BR/2BA｜スーパーホスト Teerapong｜評価 4.92" }},
   { type:"move", mc:"#22b8cf", badge:"⛴ Ferry", title:"ヤオノイ島 → プーケット", dates:"1/19（火）", desc:"ヤオノイ島 → ラサダ港", sub:"フェリー（約1h）", mapId:"phuket" },
   { type:"stay", c:"#d946ef", mapId:"phuket", title:"プーケット", dates:"1/19（火）— 1/23（土）", tag:"4泊5日",
     hotel:{ booked:false, name:"未定", addr:"-", io:"1/19 IN → 1/23 OUT", note:"パトンビーチ or オールドタウン推奨" }},
@@ -1067,7 +1066,4 @@ timeline.forEach(item => {
   el.innerHTML = h;
   tlEl.appendChild(el);
 });
-</script>
-</head>
-<body></body>
-</html>
+</script></html>
