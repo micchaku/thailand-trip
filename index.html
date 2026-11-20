@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<style>:root{color-scheme:light;box-sizing:border-box}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>:root{color-scheme:light;box-sizing:border-box}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+</head>
+<body>
 <title>Vietnam-Thailand Route</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" />
 <style>/* Leaflet 1.9.4 */
@@ -852,7 +854,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg); displa
   <!-- Summary Dashboard -->
   <div class="summary">
     <div class="sum-card"><div class="sum-val">7</div><div class="sum-label">滞在地</div></div>
-    <div class="sum-card accent-booked"><div class="sum-val">6</div><div class="sum-label">手配済み</div></div>
+    <div class="sum-card accent-booked"><div class="sum-val">7</div><div class="sum-label">手配済み</div></div>
     <div class="sum-card accent-pending"><div class="sum-val">1</div><div class="sum-label">未手配</div></div>
     <div class="sum-card"><div class="sum-val">21</div><div class="sum-label">泊</div></div>
   </div>
@@ -872,13 +874,13 @@ body { font-family: var(--font); background: var(--bg); color: var(--fg); displa
 <script>
 const places = [
   { id:"haneda", name:"羽田空港", en:"Haneda", lat:35.5494, lng:139.7798, color:"#e11d48" },
-  { id:"hcmc", name:"ホーチミン", en:"Ho Chi Minh City", lat:10.8231, lng:106.6297, color:"#f59e0b", stay:"3泊4日", extra:"Airbnb 手配済" },
+  { id:"hcmc", name:"ホーチミン", en:"Ho Chi Minh City", lat:10.8231, lng:106.6297, color:"#f59e0b", stay:"3泊4日", extra:"ヴィンホイアパートメント（Airbnb予約済）" },
   { id:"bangkok", name:"バンコク", en:"Bangkok", lat:13.7563, lng:100.5018, color:"#f97316", stay:"中継", extra:"乗継ハブ" },
   { id:"chiangmai", name:"チェンマイ", en:"Chiang Mai", lat:18.7883, lng:98.9853, color:"#10b981", stay:"4泊5日", extra:"宿未定" },
   { id:"krabi", name:"クラビ", en:"Krabi", lat:8.0863, lng:98.9063, color:"#3b82f6", stay:"3泊4日", extra:"Venice Krabi Villa Resort（Agoda予約済）" },
   { id:"lanta", name:"ランタ島", en:"Koh Lanta", lat:7.6292, lng:99.0389, color:"#06b6d4", stay:"3泊4日", extra:"Cliff Lanta Suite（Agoda予約済）" },
   { id:"yaonoi", name:"ヤオノイ島", en:"Koh Yao Noi", lat:8.1307, lng:98.5810, color:"#14b8a6", stay:"3泊4日", extra:"マリンハウス（Airbnb予約済）" },
-  { id:"phuket", name:"プーケット", en:"Phuket", lat:7.8804, lng:98.3923, color:"#d946ef", stay:"4泊5日", extra:"宿未定" }
+  { id:"phuket", name:"プーケット", en:"Phuket", lat:7.8804, lng:98.3923, color:"#d946ef", stay:"4泊5日（2宿）", extra:"Thavorn Beach Village（Expedia予約済）+ 後半未定" }
 ];
 
 const segments = [
@@ -897,7 +899,7 @@ const timeline = [
   { type:"move", mc:"#e879a0", badge:"✈ Flight", title:"羽田空港 → ホーチミン", dates:"1/2（土）", desc:"羽田（HND）→ タンソンニャット（SGN）", sub:"直行便",
     flight:{ flightNo:"JAL079", airline:"日本航空（JAL）", dep:"01:25", depAirport:"羽田空港（HND）", arr:"05:55", arrAirport:"タンソンニャット空港（SGN）", duration:"約6h30m" }},
   { type:"stay", c:"#f59e0b", mapId:"hcmc", title:"ホーチミン", dates:"1/2（土）— 1/5（火）", tag:"3泊4日",
-    hotel:{ booked:true, name:"Airbnb（ホーチミン）", addr:"608 Đường Võ Văn Kiệt, Ho Chi Minh City", io:"1/2 IN → 1/5 OUT", url:"https://www.airbnb.jp/rooms/1651837590927723080", mapUrl:"https://maps.app.goo.gl/mMZonW6c2wjLe2426", note:"予約済" }},
+    hotel:{ booked:true, name:"ヴィンホイアパートメント（Vĩnh Hội Apartment）", addr:"カンホイ通り、4区、ホーチミン", io:"1/2 IN → 1/5 OUT", url:"https://www.airbnb.jp/rooms/1291792932788185459", mapUrl:"https://maps.app.goo.gl/AdMpctKugfoyLDyv7", note:"Airbnb予約済｜コンドミニアム 2BR/2BA｜ホスト Nhung｜評価 4.86" }},
   { type:"move", mc:"#e879a0", badge:"✈ Flight", title:"ホーチミン → バンコク", dates:"1/5（火）昼", desc:"SGN → ドンムアン空港（DMK）", sub:"国際線（約1h35m）", mapId:"bangkok",
     flight:{ flightNo:"VN605", airline:"ベトナム航空", dep:"11:35", depAirport:"タンソンニャット空港（SGN）", arr:"13:10", arrAirport:"ドンムアン空港（DMK）", duration:"約1h35m" }},
   { type:"move", mc:"#f59e42", badge:"🚂 寝台列車", title:"バンコク → チェンマイ", dates:"1/5（火）18:40発 — 1/6 07:15着", desc:"クルンテープ・アピワット中央駅 → チェンマイ駅", sub:"Special Express CNR（列車No.9）", mapId:"chiangmai",
@@ -919,8 +921,10 @@ const timeline = [
   { type:"stay", c:"#14b8a6", mapId:"yaonoi", title:"ヤオノイ島", dates:"1/16（土）— 1/19（火）", tag:"3泊4日",
     hotel:{ booked:true, name:"マリンハウス（Marine House）", addr:"Koh Yao Noi, Phang Nga, Thailand", io:"1/16 IN → 1/19 OUT", url:"https://www.airbnb.jp/rooms/37923265", note:"Airbnb予約済｜一軒家 2BR/2BA｜スーパーホスト Teerapong｜評価 4.92" }},
   { type:"move", mc:"#22b8cf", badge:"⛴ Ferry", title:"ヤオノイ島 → プーケット", dates:"1/19（火）", desc:"ヤオノイ島 → ラサダ港", sub:"フェリー（約1h）", mapId:"phuket" },
-  { type:"stay", c:"#d946ef", mapId:"phuket", title:"プーケット", dates:"1/19（火）— 1/23（土）", tag:"4泊5日",
-    hotel:{ booked:false, name:"未定", addr:"-", io:"1/19 IN → 1/23 OUT", note:"パトンビーチ or オールドタウン推奨" }},
+  { type:"stay", c:"#d946ef", mapId:"phuket", title:"プーケット（前半）", dates:"1/19（火）— 1/21（木）", tag:"2泊3日",
+    hotel:{ booked:true, name:"Thavorn Beach Village Resort & Spa", addr:"6/2 Moo 6, Nakalay Bay, Kamala, Phuket 83150", io:"1/19 IN → 1/21 OUT", url:"https://www.thavornbeachvillage.com/", mapUrl:"https://maps.app.goo.gl/7zFHfY8jhPMcPHFt5", note:"Expedia予約済｜5つ星リゾート｜プライベートビーチ" }},
+  { type:"stay", c:"#d946ef", mapId:"phuket", title:"プーケット（後半）", dates:"1/21（木）— 1/23（土）", tag:"2泊3日",
+    hotel:{ booked:false, name:"未定", addr:"-", io:"1/21 IN → 1/23 OUT", note:"パトンビーチ or オールドタウン推奨" }},
   { type:"move", mc:"#e879a0", badge:"✈ 帰国便", title:"プーケット → ホーチミン → 羽田", dates:"1/23（土）— 1/24（日）", desc:"HKT → SGN経由 → HND", sub:"1/24 日本帰国", mapId:"haneda",
     flights:[
       { flightNo:"VN620", airline:"ベトナム航空", dep:"18:50", depAirport:"プーケット空港（HKT）", arr:"20:55", arrAirport:"タンソンニャット空港（SGN）", duration:"約2h05m", date:"1/23" },
@@ -1081,4 +1085,6 @@ timeline.forEach(item => {
   el.innerHTML = h;
   tlEl.appendChild(el);
 });
-</script></html>
+</script>
+</body>
+</html>
